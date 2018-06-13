@@ -24,7 +24,7 @@ resource "aws_ecs_cluster" "app" {
 # note that the source for the turner default backend image is here:
 # https://github.com/turnerlabs/turner-defaultbackend
 variable "default_backend_image" {
-  value = "quay.io/turner/turner-defaultbackend:0.2.0"
+  default = "quay.io/turner/turner-defaultbackend:0.2.0"
 }
 
 resource "aws_ecs_task_definition" "app" {
