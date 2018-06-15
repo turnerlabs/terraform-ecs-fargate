@@ -43,6 +43,7 @@ $ terraform apply
 | container_name | The name of the container to run | string | - | yes |
 | container_port | The port the container will listen on, used for load balancer health check Best practice is that this value is higher than 1024 so the container processes isn't running at root. | string | - | yes |
 | cpu | How much of a virtual CPU (vCPU) to allocate for the container 256 is one-quarter of a vCPU | string | `256` | no |
+| default_backend_image | the default docker image to deploy with the infrastructure | string | `quay.io/turner/turner-defaultbackend:0.2.0` | no |
 | ecs_as_cpu_high_threshold_per | If the average CPU utilization over a minute rises to this threshold, the number of containers will be increased (but not above ecs_autoscale_max_instances). | string | `80` | no |
 | ecs_as_cpu_low_threshold_per | If the average CPU utilization over a minute drops to this threshold, the number of containers will be reduced (but not below ecs_autoscale_min_instances). | string | `20` | no |
 | ecs_autoscale_max_instances | The maximum number of containers that should be running. | string | `8` | no |
