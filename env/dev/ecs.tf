@@ -16,6 +16,17 @@ resource "aws_ecs_cluster" "app" {
   name = "${var.app}-${var.environment}"
 }
 
+# the default docker image to deploy with the infrastructure
+# note that you can use the fargate CLI for application concerns
+# like deploying actual application images and environment variables
+# on top of the infrastructure provisioned by this template
+# https://github.com/turnerlabs/fargate
+# note that the source for the turner default backend image is here:
+# https://github.com/turnerlabs/turner-defaultbackend
+variable "default_backend_image" {
+  default = "quay.io/turner/turner-defaultbackend:0.2.0"
+}
+
 resource "aws_ecs_task_definition" "app" {
   family                   = "${var.app}-${var.environment}"
   requires_compatibilities = ["FARGATE"]
@@ -31,7 +42,7 @@ resource "aws_ecs_task_definition" "app" {
 [
   {
     "name": "${var.container_name}",
-    "image": "quay.io/turner/turner-defaultbackend:0.2.0",
+    "image": "${var.default_backend_image}",
     "essential": true,
     "portMappings": [
       {
