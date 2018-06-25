@@ -10,9 +10,10 @@ The optional components can be removed by simply deleting the `.tf` file.
 |------|-------------|:----:|
 | [main.tf][edm] | Terrform remote state, AWS provider, output |  |
 | [ecs.tf][ede] | ECS Cluster, Service, Task Definition, ecsTaskExecutionRole, CloudWatch Log Group |  |
-| [lb.tf][edl] | ALB, Target Group, S3 bucket for access logs  |  |
+| [lb.tf][edl] | ALB, Target Group, S3 bucket for access logs  | * |
+| [lb.tcp.tf][edlt] | NLB and Target Group | * |
 | [nsg.tf][edn] | NSG for ALB and Task, keep only if using HTTP | &dagger; |
-| [nsg.tcp.tf][ednt] | NSG for ALB and Task, use only if using TCP | &dagger; |
+| [nsg.tcp.tf][ednt] | NSG for NLB and Task, use only if using TCP | &dagger; |
 | [lb-http.tf][edlhttp] | HTTP listener, NSG rule. Delete if HTTPS only | &ddagger; |
 | [lb-https.tf][edlhttps] | HTTPS listener, NSG rule. Delete if HTTP only | &ddagger; |
 | [lb-tcp.tf][edltcp] | TCP listener. Delete if using HTTP(S) | &ddagger; |
@@ -23,8 +24,13 @@ The optional components can be removed by simply deleting the `.tf` file.
 | [autoscale-time.tf][edat] | Time-based auto scaling | Yes |
 | [logs-logzio.tf][edll] | Ship container logs to logz.io | Yes |
 
-#### Table Legend  
-> &dagger; &ndash; Use `nsg.tf` when protocol is HTTP or HTTP; use `nsg.tcp.tf` when
+
+#### Table Legend
+
+> \* &ndash; Use `lb.tf` when protocol is HTTP or HTTPS; use `lb.tcp.tf` when protocol is
+TCP.
+
+> &dagger; &ndash; Use `nsg.tf` when protocol is HTTP or HTTPS; use `nsg.tcp.tf` when
 protocol is TCP.
 
 > &ddagger; &ndash; LB listeners `lb-http.tf` and `lb-https.tf` can be used together or
@@ -100,6 +106,7 @@ $ terraform apply
 [edm]: main.tf
 [ede]: ecs.tf
 [edl]: lb.tf
+[edlt]: lb.tcp.tf
 [edn]: nsg.tf
 [ednt]: nsg.tcp.tf
 [edlhttp]: lb-http.tf

@@ -28,7 +28,8 @@ that is needed.
 |------|-------------|:----:|
 | [main.tf][edm] | Terrform remote state, AWS provider, output |  |
 | [ecs.tf][ede] | ECS Cluster, Service, Task Definition, ecsTaskExecutionRole, CloudWatch Log Group |  |
-| [lb.tf][edl] | ALB, Target Group, S3 bucket for access logs  |  |
+| [lb.tf][edl] | ALB, Target Group, S3 bucket for access logs  | * |
+| [lb.tcp.tf][edlt] | NLB and Target Group | * |
 | [nsg.tf][edn] | NSG for ALB and Task, keep only if using HTTP | &dagger; |
 | [nsg.tcp.tf][ednt] | NSG for ALB and Task, use only if using TCP | &dagger; |
 | [lb-http.tf][edlhttp] | HTTP listener, NSG rule. Delete if HTTPS only | &ddagger; |
@@ -41,7 +42,12 @@ that is needed.
 | [autoscale-time.tf][edat] | Time-based auto scaling | Yes |
 | [logs-logzio.tf][edll] | Ship container logs to logz.io | Yes |
 
-#### Table Legend  
+
+#### Table Legend
+
+> \* &ndash; Use `lb.tf` when protocol is HTTP or HTTPS; use `lb.tcp.tf` when protocol is
+TCP.
+
 > &dagger; &ndash; Use `nsg.tf` when protocol is HTTP or HTTP; use `nsg.tcp.tf` when
 protocol is TCP.
 
@@ -90,6 +96,7 @@ $ terraform apply
 [edm]: ./env/dev/main.tf
 [ede]: ./env/dev/ecs.tf
 [edl]: ./env/dev/lb.tf
+[edlt]: ./env/dev/lb.tcp.tf
 [edn]: ./env/dev/nsg.tf
 [ednt]: ./env/dev/nsg.tcp.tf
 [edlhttp]: ./env/dev/lb-http.tf
