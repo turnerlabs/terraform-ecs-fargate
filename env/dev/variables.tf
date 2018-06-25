@@ -37,6 +37,11 @@ variable "internal" {
 # isn't running at root.
 variable "container_port" {}
 
+# Type of load balancer to use
+variable "lb_type" {
+  default = "application"
+}
+
 # The port the load balancer will listen on
 variable "lb_port" {
   default = "80"

@@ -16,7 +16,7 @@ provider "aws" {
 
 # The load balancer DNS name
 output "lb_dns" {
-  value = "${aws_alb.main.dns_name}"
+  value = "${aws_lb.main.dns_name}"
 }
 
 # The URL for the docker image repo in ECR

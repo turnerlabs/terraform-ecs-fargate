@@ -3,8 +3,9 @@
 # delete either of these if your app doesn't need them
 # but you need at least one
 
-resource "aws_alb" "main" {
+resource "aws_lb" "main" {
   name = "${var.app}-${var.environment}"
+  load_balancer_type = "${var.lb_type}"
 
   # launch lbs in public or private subnets based on "internal" variable
   internal        = "${var.internal}"
@@ -19,7 +20,7 @@ resource "aws_alb" "main" {
   }
 }
 
-resource "aws_alb_target_group" "main" {
+resource "aws_lb_target_group" "main" {
   name                 = "${var.app}-${var.environment}"
   port                 = "${var.lb_port}"
   protocol             = "${var.lb_protocol}"

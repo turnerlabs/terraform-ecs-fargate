@@ -11,15 +11,24 @@ The optional components can be removed by simply deleting the `.tf` file.
 | [main.tf][edm] | Terrform remote state, AWS provider, output |  |
 | [ecs.tf][ede] | ECS Cluster, Service, Task Definition, ecsTaskExecutionRole, CloudWatch Log Group |  |
 | [lb.tf][edl] | ALB, Target Group, S3 bucket for access logs  |  |
-| [nsg.tf][edn] | NSG for ALB and Task |  |
-| [lb-http.tf][edlhttp] | HTTP listener, NSG rule. Delete if HTTPS only | Yes |
-| [lb-https.tf][edlhttps] | HTTPS listener, NSG rule. Delete if HTTP only | Yes |
+| [nsg.tf][edn] | NSG for ALB and Task, keep only if using HTTP | &dagger; |
+| [nsg.tcp.tf][ednt] | NSG for ALB and Task, use only if using TCP | &dagger; |
+| [lb-http.tf][edlhttp] | HTTP listener, NSG rule. Delete if HTTPS only | &ddagger; |
+| [lb-https.tf][edlhttps] | HTTPS listener, NSG rule. Delete if HTTP only | &ddagger; |
+| [lb-tcp.tf][edltcp] | TCP listener. Delete if using HTTP(S) | &ddagger; |
 | [dashboard.tf][edd] | CloudWatch dashboard: CPU, memory, and HTTP-related metrics | Yes |
 | [role.tf][edr] | Application Role for container | Yes |
 | [cicd.tf][edc] | IAM user that can be used by CI/CD systems | Yes |
 | [autoscale-perf.tf][edap] | Performance-based auto scaling | Yes |
 | [autoscale-time.tf][edat] | Time-based auto scaling | Yes |
 | [logs-logzio.tf][edll] | Ship container logs to logz.io | Yes |
+
+#### Table Legend  
+> &dagger; &ndash; Use `nsg.tf` when protocol is HTTP or HTTP; use `nsg.tcp.tf` when
+protocol is TCP.
+
+> &ddagger; &ndash; LB listeners `lb-http.tf` and `lb-https.tf` can be used together or
+by themselves, however `lb-tcp.tf` can only be used by itself.
 
 
 ## Usage
@@ -55,6 +64,7 @@ $ terraform apply
 | health_check_timeout | How long to wait for the response on the health check path | string | `10` | no |
 | https_port | The port to listen on for HTTPS, always use 443 | string | `443` | no |
 | internal | Whether the application is available on the public internet, also will determine which subnets will be used (public or private) | string | `true` | no |
+| lb_type | The type of load balancer to use, `application` or `network` | string | `application` | no |
 | lb_port | The port the load balancer will listen on | string | `80` | no |
 | lb_protocol | The load balancer protocol | string | `HTTP` | no |
 | logz_token | The auth token to use for sending logs to Logz.io | string | - | yes |
@@ -91,8 +101,10 @@ $ terraform apply
 [ede]: ecs.tf
 [edl]: lb.tf
 [edn]: nsg.tf
+[ednt]: nsg.tcp.tf
 [edlhttp]: lb-http.tf
 [edlhttps]: lb-https.tf
+[edltcp]: lb-tcp.tf
 [edd]: dashboard.tf
 [edr]: role.tf
 [edc]: cicd.tf

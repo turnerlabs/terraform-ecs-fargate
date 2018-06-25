@@ -103,14 +103,14 @@ resource "aws_ecs_service" "app" {
   }
 
   load_balancer {
-    target_group_arn = "${aws_alb_target_group.main.id}"
+    target_group_arn = "${aws_lb_target_group.main.id}"
     container_name   = "${var.container_name}"
     container_port   = "${var.container_port}"
   }
 
   # workaround for https://github.com/hashicorp/terraform/issues/12634
   depends_on = [
-    "aws_alb_listener.http",
+    "aws_lb_listener.http",
   ]
 
   # # uncomment after first app deployment
