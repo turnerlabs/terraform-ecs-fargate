@@ -42,7 +42,6 @@ $ terraform apply
 | certificate_arn | The ARN for the SSL certificate | string | - | yes |
 | container_name | The name of the container to run | string | - | yes |
 | container_port | The port the container will listen on, used for load balancer health check Best practice is that this value is higher than 1024 so the container processes isn't running at root. | string | - | yes |
-| cpu | How much of a virtual CPU (vCPU) to allocate for the container 256 is one-quarter of a vCPU | string | `256` | no |
 | default_backend_image | the default docker image to deploy with the infrastructure | string | `quay.io/turner/turner-defaultbackend:0.2.0` | no |
 | ecs_as_cpu_high_threshold_per | If the average CPU utilization over a minute rises to this threshold, the number of containers will be increased (but not above ecs_autoscale_max_instances). | string | `80` | no |
 | ecs_as_cpu_low_threshold_per | If the average CPU utilization over a minute drops to this threshold, the number of containers will be reduced (but not below ecs_autoscale_min_instances). | string | `20` | no |
@@ -59,7 +58,6 @@ $ terraform apply
 | lb_protocol | The load balancer protocol | string | `HTTP` | no |
 | logz_token | The auth token to use for sending logs to Logz.io | string | - | yes |
 | logz_url | The endpoint to use for sending logs to Logz.io | string | `https://listener.logz.io:8071` | no |
-| memory | How much memory to allocate to the container 512 is equal to 0.5 GB | string | `512` | no |
 | private_subnets | The private subnets, [minimum of 2][alb-docs], that are a part of the VPC(s) | string | - | yes |
 | public_subnets | The public subnets, [minimum of 2][alb-docs], that are a part of the VPC(s) | string | - | yes |
 | region | The AWS region to use for the dev environment's infrastructure Currently, Fargate is only available in `us-east-1`. | string | `us-east-1` | no |

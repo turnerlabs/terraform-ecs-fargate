@@ -73,21 +73,6 @@ variable "health_check_matcher" {
 # The name of the container to run
 variable "container_name" {}
 
-# The next two variable (cpu and memory) are very important to Fargate pricing
-# https://aws.amazon.com/fargate/pricing/
-
-# How much of a virtual CPU (vCPU) to allocate for the container
-# 256 is one-quarter of a vCPU
-variable "cpu" {
-  default = "256"
-}
-
-# How much memory to allocate to the container
-# 512 is equal to 0.5 GB
-variable "memory" {
-  default = "512"
-}
-
 # Network configuration
 
 # The VPC to use for the Fargate cluster

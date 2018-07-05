@@ -39,6 +39,16 @@ output "cicd_keys" {
   value = "terraform state show aws_iam_access_key.cicd_keys"
 }
 
+# Command to scale up cpu and memory
+output "scale_up" {
+  value = "fargate service update -h"
+}
+
+# Command to scale out the number of tasks (container replicas)
+output "scale_out" {
+  value = "fargate service scale -h"
+}
+
 # Command to set the AWS_PROFILE
 output "aws_profile" {
   value = "${var.aws_profile}"
