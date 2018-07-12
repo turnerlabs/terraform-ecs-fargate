@@ -39,6 +39,6 @@ data "template_file" "load_secrets_tpl" {
 }
 
 resource "local_file" "load_secrets" {
-  filename = "load-secrets.sh"
+  filename = "upload-secrets.sh"
   content  = "${data.template_file.load_secrets_tpl.rendered}"
 }

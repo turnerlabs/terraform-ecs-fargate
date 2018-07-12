@@ -20,7 +20,8 @@ kv_to_json () {
 AWS_PROFILE=${aws_profile}
 AWS_DEFAULT_REGION=${region}
 NAME=${secret}
-export AWS_PROFILE  AWS_DEFAULT_REGION
+AWS_DEFAULT_OUTPUT=json
+export AWS_PROFILE AWS_DEFAULT_REGION NAME AWS_DEFAULT_OUTPUT
 
 if [ -e "./hidden.env" ]; then
 
