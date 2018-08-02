@@ -73,6 +73,10 @@ variable "health_check_matcher" {
 # The name of the container to run
 variable "container_name" {}
 
+# The users from the saml role to give access
+
+variable "users" {}
+
 # Network configuration
 
 # The VPC to use for the Fargate cluster

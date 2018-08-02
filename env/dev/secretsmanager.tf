@@ -5,10 +5,12 @@ resource "aws_secretsmanager_secret" "sm_secret" {
   policy = "${data.aws_iam_policy_document.sm_resource_policy_doc.json}"
 }
 
+# get the saml user info so we can get the unique_id
 data "aws_iam_role" "saml_role" {
   name = "${var.saml_role}"
 }
 
+# resource policy doc that limits access to secret
 data "aws_iam_policy_document" "sm_resource_policy_doc" {
   statement = {
     sid = "DenyWriteToAllExceptSAMLUsers"
@@ -36,8 +38,9 @@ data "aws_iam_policy_document" "sm_resource_policy_doc" {
       test = "StringNotLike"
       variable = "aws:userId"
       values = [
-        "${data.aws_iam_role.saml_role.unique_id}:James.Hodnett@turner.com",
+        "${data.aws_caller_identity.current.user_id}",
         "${data.aws_caller_identity.current.account_id}",
+        "${formatlist("%s:%s", data.aws_iam_role.saml_role.unique_id, split(",", var.users))}"
       ]
     }
   }
@@ -63,8 +66,9 @@ data "aws_iam_policy_document" "sm_resource_policy_doc" {
       variable = "aws:userId"
       values = [
         "${aws_iam_role.app_role.unique_id}:*",
-        "${data.aws_iam_role.saml_role.unique_id}:James.Hodnett@turner.com",
+        "${data.aws_caller_identity.current.user_id}",
         "${data.aws_caller_identity.current.account_id}",
+        "${formatlist("%s:%s", data.aws_iam_role.saml_role.unique_id, split(",", var.users))}"
       ]
     }
   }
@@ -95,8 +99,9 @@ data "aws_iam_policy_document" "sm_resource_policy_doc" {
       test = "StringLike"
       variable = "aws:userId"
       values = [
-        "${data.aws_iam_role.saml_role.unique_id}:James.Hodnett@turner.com",
+        "${data.aws_caller_identity.current.user_id}",
         "${data.aws_caller_identity.current.account_id}",
+        "${formatlist("%s:%s", data.aws_iam_role.saml_role.unique_id, split(",", var.users))}"
       ]
     }
   }
@@ -122,13 +127,14 @@ data "aws_iam_policy_document" "sm_resource_policy_doc" {
       variable = "aws:userId"
       values = [
         "${aws_iam_role.app_role.unique_id}:*",
-        "${data.aws_iam_role.saml_role.unique_id}:James.Hodnett@turner.com",
+        "${data.aws_caller_identity.current.user_id}",
         "${data.aws_caller_identity.current.account_id}",
+        "${formatlist("%s:%s", data.aws_iam_role.saml_role.unique_id, split(",", var.users))}"
       ]
     }
   }
-
 }
+
 # secretsmanager assumabale roles and policies
 data "aws_iam_policy_document" "sm_app_policy_doc" {
   statement = {
@@ -151,20 +157,4 @@ resource "aws_iam_role_policy" "sm_app_policy" {
   name   = "sm_role_policy"
   role   = "${aws_iam_role.app_role.name}"
   policy = "${data.aws_iam_policy_document.sm_app_policy_doc.json}"
-}
-
-# create the script to load the secrets into the secretsmanager secret
-data "template_file" "upload_secrets_tpl" {
-  template = "${file("${path.module}/upload-secrets.tpl")}"
-
-  vars {
-    region      = "${var.region}"
-    aws_profile = "${var.aws_profile}"
-    secret      = "${var.app}-${var.environment}"
-  }
-}
-
-resource "local_file" "load_secrets" {
-  filename = "upload-secrets.sh"
-  content  = "${data.template_file.upload_secrets_tpl.rendered}"
 }
