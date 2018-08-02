@@ -75,7 +75,9 @@ variable "container_name" {}
 
 # The users from the saml role to give access
 
-variable "users" {}
+variable "users" {
+  type = "list"
+}
 
 # Network configuration
 
