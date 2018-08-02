@@ -7,16 +7,14 @@ resource "aws_secretsmanager_secret" "sm_secret" {
   "Version": "2012-10-17",
   "Statement": [
     {
+
       "Sid": "DenyWriteToAllExceptSAMLUsers",
       "Effect": "Deny",
       "Principal": "*",
       "Action": [
         "secretsmanager:CancelRotateSecret",
         "secretsmanager:CreateSecret",
-        "secretsmanager:DeleteResourcePolicy",
         "secretsmanager:DeleteSecret",
-        "secretsmanager:GetResourcePolicy",
-        "secretsmanager:PutResourcePolicy",
         "secretsmanager:PutSecretValue",
         "secretsmanager:RestoreSecret",
         "secretsmanager:RotateSecret",
@@ -30,8 +28,9 @@ resource "aws_secretsmanager_secret" "sm_secret" {
       ],
       "Condition": {
         "StringNotLike": {
-          "aws:arn": [
-            "arn:aws:sts::${data.aws_caller_identity.current.account_id}:assumed-role/${var.saml_role}/me@example.com"
+          "aws:userId": [
+            "${data.aws_iam_role.saml_role.unique_id}:me@example.com",
+            "${data.aws_caller_identity.current.account_id}"
           ]
         }
       }
@@ -42,18 +41,71 @@ resource "aws_secretsmanager_secret" "sm_secret" {
       "Principal": "*",
       "Action": [
         "secretsmanager:DescribeSecret",
+        "secretsmanager:List*",
         "secretsmanager:GetRandomPassword",
-        "secretsmanager:GetSecretValue",
-        "secretsmanager:List*"
+        "secretsmanager:GetSecretValue"
       ],
       "Resource": [
         "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:${var.app}-${var.environment}-*"
       ],
       "Condition": {
         "StringNotLike": {
-          "aws:arn": [
-            "${aws_iam_role.app_role.arn}",
-            "arn:aws:sts::${data.aws_caller_identity.current.account_id}:assumed-role/${var.saml_role}/me@example.com"
+          "aws:userId": [
+            "${aws_iam_role.app_role.unique_id}:*",
+            "${data.aws_iam_role.saml_role.unique_id}:me@example.com",
+            "${data.aws_caller_identity.current.account_id}"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowWriteToSAMLUsers",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "secretsmanager:CancelRotateSecret",
+        "secretsmanager:CreateSecret",
+        "secretsmanager:DeleteResourcePolicy",
+        "secretsmanager:DeleteSecret",
+        "secretsmanager:PutSecretValue",
+        "secretsmanager:RestoreSecret",
+        "secretsmanager:RotateSecret",
+        "secretsmanager:TagResource",
+        "secretsmanager:UntagResource",
+        "secretsmanager:UpdateSecret",
+        "secretsmanager:UpdateSecretVersionStage"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:${var.app}-${var.environment}-??????"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:userId": [
+            "${data.aws_iam_role.saml_role.unique_id}:me@example.com",
+            "${data.aws_caller_identity.current.account_id}"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "allowWriteSAMLUsersAndRole",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "secretsmanager:DescribeSecret",
+        "secretsmanager:List*",
+        "secretsmanager:GetRandomPassword",
+        "secretsmanager:GetSecretValue"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:${var.app}-${var.environment}-*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:userId": [
+            "${aws_iam_role.app_role.unique_id}:*",
+            "${data.aws_iam_role.saml_role.unique_id}:me@example.com",
+            "${data.aws_caller_identity.current.account_id}"
           ]
         }
       }
