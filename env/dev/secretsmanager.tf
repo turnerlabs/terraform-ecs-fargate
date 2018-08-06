@@ -40,7 +40,7 @@ data "aws_iam_policy_document" "sm_resource_policy_doc" {
       values = [
         "${data.aws_caller_identity.current.user_id}",
         "${data.aws_caller_identity.current.account_id}",
-        "${formatlist("%s:%s", data.aws_iam_role.saml_role.unique_id, var.users)}"
+        "${formatlist("%s:%s", data.aws_iam_role.saml_role.unique_id, var.saml_userss)}"
       ]
     }
   }
@@ -68,7 +68,7 @@ data "aws_iam_policy_document" "sm_resource_policy_doc" {
         "${aws_iam_role.app_role.unique_id}:*",
         "${data.aws_caller_identity.current.user_id}",
         "${data.aws_caller_identity.current.account_id}",
-        "${formatlist("%s:%s", data.aws_iam_role.saml_role.unique_id, var.users)}"
+        "${formatlist("%s:%s", data.aws_iam_role.saml_role.unique_id, var.saml_users)}"
       ]
     }
   }
@@ -101,7 +101,7 @@ data "aws_iam_policy_document" "sm_resource_policy_doc" {
       values = [
         "${data.aws_caller_identity.current.user_id}",
         "${data.aws_caller_identity.current.account_id}",
-        "${formatlist("%s:%s", data.aws_iam_role.saml_role.unique_id, var.users)}"
+        "${formatlist("%s:%s", data.aws_iam_role.saml_role.unique_id, var.saml_users)}"
       ]
     }
   }
@@ -129,7 +129,7 @@ data "aws_iam_policy_document" "sm_resource_policy_doc" {
         "${aws_iam_role.app_role.unique_id}:*",
         "${data.aws_caller_identity.current.user_id}",
         "${data.aws_caller_identity.current.account_id}",
-        "${formatlist("%s:%s", data.aws_iam_role.saml_role.unique_id, var.users)}"
+        "${formatlist("%s:%s", data.aws_iam_role.saml_role.unique_id, var.saml_users)}"
       ]
     }
   }
@@ -157,4 +157,10 @@ resource "aws_iam_role_policy" "sm_app_policy" {
   name   = "sm_role_policy"
   role   = "${aws_iam_role.app_role.name}"
   policy = "${data.aws_iam_policy_document.sm_app_policy_doc.json}"
+}
+
+# The users from the saml role to give access
+
+variable "saml_users" {
+  type = "list"
 }
