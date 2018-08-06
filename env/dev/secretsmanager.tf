@@ -40,7 +40,7 @@ data "aws_iam_policy_document" "sm_resource_policy_doc" {
       values = [
         "${data.aws_caller_identity.current.user_id}",
         "${data.aws_caller_identity.current.account_id}",
-        "${formatlist("%s:%s", data.aws_iam_role.saml_role.unique_id, var.saml_userss)}"
+        "${formatlist("%s:%s", data.aws_iam_role.saml_role.unique_id, var.saml_users)}"
       ]
     }
   }
