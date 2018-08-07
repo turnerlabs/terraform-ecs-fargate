@@ -33,7 +33,7 @@ $ terraform apply
 ```
 
 
-## Variables
+## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
@@ -42,7 +42,8 @@ $ terraform apply
 | certificate_arn | The ARN for the SSL certificate | string | - | yes |
 | container_name | The name of the container to run | string | - | yes |
 | container_port | The port the container will listen on, used for load balancer health check Best practice is that this value is higher than 1024 so the container processes isn't running at root. | string | - | yes |
-| default_backend_image | the default docker image to deploy with the infrastructure | string | `quay.io/turner/turner-defaultbackend:0.2.0` | no |
+| default_backend_image | The default docker image to deploy with the infrastructure. Note that you can use the fargate CLI for application concerns like deploying actual application images and environment variables on top of the infrastructure provisioned by this template https://github.com/turnerlabs/fargate note that the source for the turner default backend image is here: https://github.com/turnerlabs/turner-defaultbackend | string | `quay.io/turner/turner-defaultbackend:0.2.0` | no |
+| deregistration_delay | The amount time for Elastic Load Balancing to wait before changing the state of a deregistering target from draining to unused | string | `30` | no |
 | ecs_as_cpu_high_threshold_per | If the average CPU utilization over a minute rises to this threshold, the number of containers will be increased (but not above ecs_autoscale_max_instances). | string | `80` | no |
 | ecs_as_cpu_low_threshold_per | If the average CPU utilization over a minute drops to this threshold, the number of containers will be reduced (but not below ecs_autoscale_min_instances). | string | `20` | no |
 | ecs_autoscale_max_instances | The maximum number of containers that should be running. | string | `8` | no |
@@ -58,19 +59,18 @@ $ terraform apply
 | lb_protocol | The load balancer protocol | string | `HTTP` | no |
 | logz_token | The auth token to use for sending logs to Logz.io | string | - | yes |
 | logz_url | The endpoint to use for sending logs to Logz.io | string | `https://listener.logz.io:8071` | no |
-| private_subnets | The private subnets, [minimum of 2][alb-docs], that are a part of the VPC(s) | string | - | yes |
-| public_subnets | The public subnets, [minimum of 2][alb-docs], that are a part of the VPC(s) | string | - | yes |
+| private_subnets | The private subnets, minimum of 2, that are a part of the VPC(s) | string | - | yes |
+| public_subnets | The public subnets, minimum of 2, that are a part of the VPC(s) | string | - | yes |
 | region | The AWS region to use for the dev environment's infrastructure Currently, Fargate is only available in `us-east-1`. | string | `us-east-1` | no |
 | replicas | How many containers to run | string | `1` | no |
 | saml_role | The SAML role to use | string | - | yes |
 | scale_down_count | The number of containers to scale down to | string | `0` | no |
 | scale_down_cron | Default scale down at 7 pm every day | string | `cron(0 23 * * ? *)` | no |
 | scale_up_count | The number of containers to scale up to | string | `1` | no |
-| scale_up_cron | Default scale up at 7 am weekdays, this is UTC so it doesn't adjust to daylight savings; [learn more][up] | string | `cron(0 11 ? * MON-FRI *)` | no |
+| scale_up_cron | Default scale up at 7 am weekdays, this is UTC so it doesn't adjust to daylight savings https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html | string | `cron(0 11 ? * MON-FRI *)` | no |
 | slack_webhook | An endpoint that will receive scale up/down notifications | string | `` | no |
 | tags | Tags for the infrastructure | map | - | yes |
 | vpc | The VPC to use for the Fargate cluster | string | - | yes |
-
 
 ## Outputs
 
@@ -81,6 +81,8 @@ $ terraform apply
 | deploy | Command to deploy a new task definition to the service using Docker Compose |
 | docker_registry | The URL for the docker image repo in ECR |
 | lb_dns | The load balancer DNS name |
+| scale_out | Command to scale out the number of tasks (container replicas) |
+| scale_up | Command to scale up cpu and memory |
 | status | Command to view the status of the Fargate service |
 
 

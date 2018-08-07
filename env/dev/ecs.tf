@@ -16,8 +16,8 @@ resource "aws_ecs_cluster" "app" {
   name = "${var.app}-${var.environment}"
 }
 
-# the default docker image to deploy with the infrastructure
-# note that you can use the fargate CLI for application concerns
+# The default docker image to deploy with the infrastructure.
+# Note that you can use the fargate CLI for application concerns
 # like deploying actual application images and environment variables
 # on top of the infrastructure provisioned by this template
 # https://github.com/turnerlabs/fargate
