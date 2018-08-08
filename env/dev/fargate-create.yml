@@ -9,12 +9,12 @@ prompts:
     filesToDeleteIfNo:
       - "lb-https.tf"
 
-  - question: "Would you like performance based auto-scaling?"
+  - question: "Would you like performance-based auto-scaling?"
     default: "yes"
     filesToDeleteIfNo:
       - "autoscale-perf.tf"
 
-  - question: "Would you like time based auto-scaling?"
+  - question: "Would you like time-based auto-scaling?"
     default: "yes"
     filesToDeleteIfNo:
       - "autoscale-time.tf"
