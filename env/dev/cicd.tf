@@ -69,3 +69,8 @@ resource "aws_iam_user_policy" "cicd_user_policy" {
 data "aws_ecr_repository" "ecr" {
   name = "${var.app}"
 }
+
+# The AWS keys for the CICD user to use in a build system
+output "cicd_keys" {
+  value = "terraform state show aws_iam_access_key.cicd_keys"
+}

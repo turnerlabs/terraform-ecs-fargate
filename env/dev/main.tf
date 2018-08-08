@@ -34,11 +34,6 @@ output "deploy" {
   value = "fargate service deploy -f docker-compose.yml"
 }
 
-# The AWS keys for the CICD user to use in a build system
-output "cicd_keys" {
-  value = "terraform state show aws_iam_access_key.cicd_keys"
-}
-
 # Command to scale up cpu and memory
 output "scale_up" {
   value = "fargate service update -h"
