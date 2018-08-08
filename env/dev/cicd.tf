@@ -74,3 +74,8 @@ data "aws_ecr_repository" "ecr" {
 output "cicd_keys" {
   value = "terraform state show aws_iam_access_key.cicd_keys"
 }
+
+# The URL for the docker image repo in ECR
+output "docker_registry" {
+  value = "${data.aws_ecr_repository.ecr.repository_url}"
+}
