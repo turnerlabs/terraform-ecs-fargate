@@ -25,7 +25,7 @@ resource "aws_alb_target_group" "main" {
   protocol             = "${var.lb_protocol}"
   vpc_id               = "${var.vpc}"
   target_type          = "ip"
-  deregistration_delay = 60
+  deregistration_delay = "${var.deregistration_delay}"
 
   health_check {
     path                = "${var.health_check}"

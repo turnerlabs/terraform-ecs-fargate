@@ -52,6 +52,11 @@ variable "replicas" {
   default = "1"
 }
 
+# The amount time for Elastic Load Balancing to wait before changing the state of a deregistering target from draining to unused
+variable "deregistration_delay" {
+  default = "30"
+}
+
 # The path to the health check for the load balancer to know if the container(s) are ready
 variable "health_check" {}
 
