@@ -19,11 +19,6 @@ output "lb_dns" {
   value = "${aws_alb.main.dns_name}"
 }
 
-# The URL for the docker image repo in ECR
-output "docker_registry" {
-  value = "${data.aws_ecr_repository.ecr.repository_url}"
-}
-
 # Command to view the status of the Fargate service
 output "status" {
   value = "fargate service info"
