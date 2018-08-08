@@ -1,7 +1,7 @@
 # create the secretsmanager secret
 resource "aws_secretsmanager_secret" "sm_secret" {
-  name = "${var.app}-${var.environment}"
-  tags = "${var.tags}"
+  name   = "${var.app}-${var.environment}"
+  tags   = "${var.tags}"
   policy = "${data.aws_iam_policy_document.sm_resource_policy_doc.json}"
 }
 
@@ -10,157 +10,127 @@ data "aws_iam_role" "saml_role" {
   name = "${var.saml_role}"
 }
 
+# Allow for code reuse...
+locals {
+  # secretsmanager write actions
+  sm_write_actions = [
+    "secretsmanager:CancelRotateSecret",
+    "secretsmanager:CreateSecret",
+    "secretsmanager:DeleteSecret",
+    "secretsmanager:PutSecretValue",
+    "secretsmanager:RestoreSecret",
+    "secretsmanager:RotateSecret",
+    "secretsmanager:TagResource",
+    "secretsmanager:UntagResource",
+    "secretsmanager:UpdateSecret",
+    "secretsmanager:UpdateSecretVersionStage",
+  ]
+
+  # secretsmanager read actions
+  sm_read_actions = [
+    "secretsmanager:DescribeSecret",
+    "secretsmanager:List*",
+    "secretsmanager:GetRandomPassword",
+    "secretsmanager:GetSecretValue",
+  ]
+
+  # list of saml users for policies
+  saml_user_ids = [
+    "${data.aws_caller_identity.current.user_id}",
+    "${data.aws_caller_identity.current.account_id}",
+    "${formatlist("%s:%s", data.aws_iam_role.saml_role.unique_id, var.secrets_saml_users)}",
+  ]
+
+  # list of role users and saml users for policies
+  role_and_saml_ids = [
+    "${aws_iam_role.app_role.unique_id}:*",
+    "${local.saml_user_ids}",
+  ]
+
+  sm_arn = "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:${var.app}-${var.environment}-??????"
+}
+
 # resource policy doc that limits access to secret
 data "aws_iam_policy_document" "sm_resource_policy_doc" {
   statement = {
-    sid = "DenyWriteToAllExceptSAMLUsers"
+    sid    = "DenyWriteToAllExceptSAMLUsers"
     effect = "Deny"
+
     principals = {
-      type = "AWS"
+      type        = "AWS"
       identifiers = ["*"]
     }
-    actions = [
-      "secretsmanager:CancelRotateSecret",
-      "secretsmanager:CreateSecret",
-      "secretsmanager:DeleteSecret",
-      "secretsmanager:PutSecretValue",
-      "secretsmanager:RestoreSecret",
-      "secretsmanager:RotateSecret",
-      "secretsmanager:TagResource",
-      "secretsmanager:UntagResource",
-      "secretsmanager:UpdateSecret",
-      "secretsmanager:UpdateSecretVersionStage",
-    ]
-    resources = [
-      "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:${var.app}-${var.environment}-*"
-    ]
+
+    actions   = ["${local.sm_write_actions}"]
+    resources = ["${local.sm_arn}"]
+
     condition = {
-      test = "StringNotLike"
+      test     = "StringNotLike"
       variable = "aws:userId"
-      values = [
-        "${data.aws_caller_identity.current.user_id}",
-        "${data.aws_caller_identity.current.account_id}",
-        "${formatlist("%s:%s", data.aws_iam_role.saml_role.unique_id, var.saml_users)}"
-      ]
+      values   = ["${local.saml_user_ids}"]
     }
   }
 
   statement = {
-    sid = "DenyReadToAllExceptSAMLandApp"
+    sid    = "DenyReadToAllExceptRoleAndSAMLUsers"
     effect = "Deny"
+
     principals = {
-      type = "AWS"
+      type        = "AWS"
       identifiers = ["*"]
     }
-    actions = [
-      "secretsmanager:DescribeSecret",
-      "secretsmanager:List*",
-      "secretsmanager:GetRandomPassword",
-      "secretsmanager:GetSecretValue",
-    ]
-    resources = [
-      "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:${var.app}-${var.environment}-*"
-    ]
+
+    actions   = ["${local.sm_read_actions}"]
+    resources = ["${local.sm_arn}"]
+
     condition = {
-      test = "StringNotLike"
+      test     = "StringNotLike"
       variable = "aws:userId"
-      values = [
-        "${aws_iam_role.app_role.unique_id}:*",
-        "${data.aws_caller_identity.current.user_id}",
-        "${data.aws_caller_identity.current.account_id}",
-        "${formatlist("%s:%s", data.aws_iam_role.saml_role.unique_id, var.saml_users)}"
-      ]
+      values   = ["${local.role_and_saml_ids}"]
     }
   }
 
   statement = {
-    sid = "AllowWriteToSAMLUsers"
+    sid    = "AllowWriteToSAMLUsers"
     effect = "Allow"
+
     principals = {
-      type = "AWS"
+      type        = "AWS"
       identifiers = ["*"]
     }
-    actions = [
-      "secretsmanager:CancelRotateSecret",
-      "secretsmanager:CreateSecret",
-      "secretsmanager:DeleteSecret",
-      "secretsmanager:PutSecretValue",
-      "secretsmanager:RestoreSecret",
-      "secretsmanager:RotateSecret",
-      "secretsmanager:TagResource",
-      "secretsmanager:UntagResource",
-      "secretsmanager:UpdateSecret",
-      "secretsmanager:UpdateSecretVersionStage",
-    ]
-    resources = [
-      "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:${var.app}-${var.environment}-*"
-    ]
+
+    actions   = ["${local.sm_write_actions}"]
+    resources = ["${local.sm_arn}"]
+
     condition = {
-      test = "StringLike"
+      test     = "StringLike"
       variable = "aws:userId"
-      values = [
-        "${data.aws_caller_identity.current.user_id}",
-        "${data.aws_caller_identity.current.account_id}",
-        "${formatlist("%s:%s", data.aws_iam_role.saml_role.unique_id, var.saml_users)}"
-      ]
+      values   = ["${local.saml_user_ids}"]
     }
   }
 
   statement = {
-    sid = "AllowWriteSAMLUsersAndRole"
+    sid    = "AllowReadRoleAndSAMLUsers"
     effect = "Allow"
+
     principals = {
-      type = "AWS"
+      type        = "AWS"
       identifiers = ["*"]
     }
-    actions = [
-      "secretsmanager:DescribeSecret",
-      "secretsmanager:List*",
-      "secretsmanager:GetRandomPassword",
-      "secretsmanager:GetSecretValue",
-    ]
-    resources = [
-      "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:${var.app}-${var.environment}-*"
-    ]
+
+    actions   = ["${local.sm_read_actions}"]
+    resources = ["${local.sm_arn}"]
+
     condition = {
-      test = "StringLike"
+      test     = "StringLike"
       variable = "aws:userId"
-      values = [
-        "${aws_iam_role.app_role.unique_id}:*",
-        "${data.aws_caller_identity.current.user_id}",
-        "${data.aws_caller_identity.current.account_id}",
-        "${formatlist("%s:%s", data.aws_iam_role.saml_role.unique_id, var.saml_users)}"
-      ]
+      values   = ["${local.role_and_saml_ids}"]
     }
   }
-}
-
-# secretsmanager assumabale roles and policies
-data "aws_iam_policy_document" "sm_app_policy_doc" {
-  statement = {
-    effect = "Allow"
-
-    actions = [
-      "secretsmanager:DescribeSecret",
-      "secretsmanager:GetRandomPassword",
-      "secretsmanager:GetSecretValue",
-      "secretsmanager:List*",
-    ]
-
-    resources = [
-      "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:${var.app}-${var.environment}-*",
-    ]
-  }
-}
-
-resource "aws_iam_role_policy" "sm_app_policy" {
-  name   = "sm_role_policy"
-  role   = "${aws_iam_role.app_role.name}"
-  policy = "${data.aws_iam_policy_document.sm_app_policy_doc.json}"
 }
 
 # The users from the saml role to give access
 
-variable "saml_users" {
+variable "secrets_saml_users" {
   type = "list"
 }
