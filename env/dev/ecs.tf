@@ -47,7 +47,8 @@ resource "aws_ecs_task_definition" "app" {
     "portMappings": [
       {
         "protocol": "tcp",
-        "containerPort": ${var.container_port}
+        "containerPort": ${var.container_port},
+        "hostPort": ${var.container_port}
       }
     ],
     "environment": [
@@ -83,11 +84,6 @@ resource "aws_ecs_task_definition" "app" {
   }
 ]
 DEFINITION
-
-  # # uncomment after first app deployment
-  # lifecycle {
-  #   ignore_changes = ["container_definitions"]
-  # }
 }
 
 resource "aws_ecs_service" "app" {
@@ -113,10 +109,11 @@ resource "aws_ecs_service" "app" {
     "aws_alb_listener.http",
   ]
 
-  # # uncomment after first app deployment
-  # lifecycle {
-  #   ignore_changes = ["task_definition"]
-  # }
+  # [after initial apply] don't override changes made to task_definition
+  # from outside of terrraform (i.e.; fargate cli)
+  lifecycle {
+    ignore_changes = ["task_definition"]
+  }
 }
 
 # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_execution_IAM_role.html
