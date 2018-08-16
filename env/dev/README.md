@@ -40,7 +40,7 @@ $ terraform apply
 | app | The application's name | string | - | yes |
 | aws_profile | The AWS Profile to use | string | - | yes |
 | certificate_arn | The ARN for the SSL certificate | string | - | yes |
-| container_name | The name of the container to run | string | - | yes |
+| container_name | The name of the container to run | string | `app` | no |
 | container_port | The port the container will listen on, used for load balancer health check Best practice is that this value is higher than 1024 so the container processes isn't running at root. | string | - | yes |
 | default_backend_image | The default docker image to deploy with the infrastructure. Note that you can use the fargate CLI for application concerns like deploying actual application images and environment variables on top of the infrastructure provisioned by this template https://github.com/turnerlabs/fargate note that the source for the turner default backend image is here: https://github.com/turnerlabs/turner-defaultbackend | string | `quay.io/turner/turner-defaultbackend:0.2.0` | no |
 | deregistration_delay | The amount time for Elastic Load Balancing to wait before changing the state of a deregistering target from draining to unused | string | `30` | no |

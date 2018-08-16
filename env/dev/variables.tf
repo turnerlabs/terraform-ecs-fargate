@@ -76,7 +76,9 @@ variable "health_check_matcher" {
 }
 
 # The name of the container to run
-variable "container_name" {}
+variable "container_name" {
+  default = "app"
+}
 
 # Network configuration
 
