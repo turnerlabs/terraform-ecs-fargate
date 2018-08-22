@@ -9,14 +9,14 @@ variable "https_port" {
 # The ARN for the SSL certificate
 variable "certificate_arn" {}
 
-resource "aws_alb_listener" "https" {
-  load_balancer_arn = "${aws_alb.main.id}"
+resource "aws_lb_listener" "https" {
+  load_balancer_arn = "${aws_lb.main.id}"
   port              = "${var.https_port}"
   protocol          = "HTTPS"
   certificate_arn   = "${var.certificate_arn}"
 
   default_action {
-    target_group_arn = "${aws_alb_target_group.main.id}"
+    target_group_arn = "${aws_lb_target_group.main.id}"
     type             = "forward"
   }
 }

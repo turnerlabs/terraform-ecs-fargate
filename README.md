@@ -28,16 +28,31 @@ that is needed.
 |------|-------------|:----:|
 | [main.tf][edm] | Terrform remote state, AWS provider, output |  |
 | [ecs.tf][ede] | ECS Cluster, Service, Task Definition, ecsTaskExecutionRole, CloudWatch Log Group |  |
-| [lb.tf][edl] | ALB, Target Group, S3 bucket for access logs  |  |
-| [nsg.tf][edn] | NSG for ALB and Task |  |
-| [lb-http.tf][edlhttp] | HTTP listener, NSG rule. Delete if HTTPS only | Yes |
-| [lb-https.tf][edlhttps] | HTTPS listener, NSG rule. Delete if HTTP only | Yes |
+| [lb.tf][edl] | ALB, Target Group, S3 bucket for access logs  | * |
+| [lb.tcp.tf][edlt] | NLB and Target Group | * |
+| [nsg.tf][edn] | NSG for ALB and Task, keep only if using HTTP | &dagger; |
+| [nsg.tcp.tf][ednt] | NSG for ALB and Task, use only if using TCP | &dagger; |
+| [lb-http.tf][edlhttp] | HTTP listener, NSG rule. Delete if HTTPS only | &ddagger; |
+| [lb-https.tf][edlhttps] | HTTPS listener, NSG rule. Delete if HTTP only | &ddagger; |
+| [lb-tcp.tf][edltcp] | TCP listener. Delete if using HTTP(S) | &ddagger; |
 | [dashboard.tf][edd] | CloudWatch dashboard: CPU, memory, and HTTP-related metrics | Yes |
 | [role.tf][edr] | Application Role for container | Yes |
 | [cicd.tf][edc] | IAM user that can be used by CI/CD systems | Yes |
 | [autoscale-perf.tf][edap] | Performance-based auto scaling | Yes |
 | [autoscale-time.tf][edat] | Time-based auto scaling | Yes |
 | [logs-logzio.tf][edll] | Ship container logs to logz.io | Yes |
+
+
+#### Table Legend
+
+> \* &ndash; Use `lb.tf` when protocol is HTTP or HTTPS; use `lb.tcp.tf` when protocol is
+TCP.
+
+> &dagger; &ndash; Use `nsg.tf` when protocol is HTTP or HTTP; use `nsg.tcp.tf` when
+protocol is TCP.
+
+> &ddagger; &ndash; LB listeners `lb-http.tf` and `lb-https.tf` can be used together or
+by themselves, however `lb-tcp.tf` can only be used by itself.
 
 
 ## Usage
@@ -81,9 +96,12 @@ $ terraform apply
 [edm]: ./env/dev/main.tf
 [ede]: ./env/dev/ecs.tf
 [edl]: ./env/dev/lb.tf
+[edlt]: ./env/dev/lb.tcp.tf
 [edn]: ./env/dev/nsg.tf
+[ednt]: ./env/dev/nsg.tcp.tf
 [edlhttp]: ./env/dev/lb-http.tf
 [edlhttps]: ./env/dev/lb-https.tf
+[edltcp]: ./env/dev/lb-tcp.tf
 [edd]: ./env/dev/dashboard.tf
 [edr]: ./env/dev/role.tf
 [edc]: ./env/dev/cicd.tf
