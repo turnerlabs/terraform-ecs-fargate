@@ -108,9 +108,9 @@ resource "aws_ecs_service" "app" {
     container_port   = "${var.container_port}"
   }
 
-  # workaround for https://github.com/hashicorp/terraform/issues/12634
+  # workaround for https://github.com/hashicorp/terraform/issues/12634 and https://github.com/terraform-providers/terraform-provider-aws/issues/3495
   depends_on = [
-    "aws_alb_listener.http",
+    "aws_alb_target_group.main",
   ]
 
   # # uncomment after first app deployment
