@@ -177,6 +177,12 @@ resource "aws_secretsmanager_secret" "sm_secret" {
   policy     = "${data.aws_iam_policy_document.sm_resource_policy_doc.json}"
 }
 
+# create the placeholder secret json
+resource "aws_secretsmanager_secret_version" "initial" {
+  secret_id     = "${aws_secretsmanager_secret.sm_secret.id}"
+  secret_string = "{}"
+}
+
 # get the saml user info so we can get the unique_id
 data "aws_iam_role" "saml_role" {
   name = "${var.saml_role}"
