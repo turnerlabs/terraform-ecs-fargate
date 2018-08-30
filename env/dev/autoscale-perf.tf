@@ -84,9 +84,9 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_low" {
 
 resource "aws_appautoscaling_policy" "app_up" {
   name               = "app-scale-up"
-  service_namespace  = "ecs"
-  resource_id        = "service/${aws_ecs_cluster.app.name}/${aws_ecs_service.app.name}"
-  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "${aws_appautoscaling_target.app_scale_target.service_namespace}"
+  resource_id        = "${aws_appautoscaling_target.app_scale_target.resource_id}"
+  scalable_dimension = "${aws_appautoscaling_target.app_scale_target.scalable_dimension}"
 
   step_scaling_policy_configuration {
     adjustment_type         = "ChangeInCapacity"
@@ -98,17 +98,13 @@ resource "aws_appautoscaling_policy" "app_up" {
       scaling_adjustment          = 1
     }
   }
-
-  depends_on = [
-    "aws_appautoscaling_target.app_scale_target",
-  ]
 }
 
 resource "aws_appautoscaling_policy" "app_down" {
   name               = "app-scale-down"
-  service_namespace  = "ecs"
-  resource_id        = "service/${aws_ecs_cluster.app.name}/${aws_ecs_service.app.name}"
-  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "${aws_appautoscaling_target.app_scale_target.service_namespace}"
+  resource_id        = "${aws_appautoscaling_target.app_scale_target.resource_id}"
+  scalable_dimension = "${aws_appautoscaling_target.app_scale_target.scalable_dimension}"
 
   step_scaling_policy_configuration {
     adjustment_type         = "ChangeInCapacity"
@@ -120,8 +116,4 @@ resource "aws_appautoscaling_policy" "app_down" {
       scaling_adjustment          = -1
     }
   }
-
-  depends_on = [
-    "aws_appautoscaling_target.app_scale_target",
-  ]
 }
