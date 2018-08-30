@@ -80,6 +80,18 @@ variable "container_name" {
   default = "app"
 }
 
+// The minimum number of containers that should be running.
+// Must be at least 1.
+// For production, consider using at least "2".
+variable "ecs_autoscale_min_instances" {
+  default = "1"
+}
+
+// The maximum number of containers that should be running.
+variable "ecs_autoscale_max_instances" {
+  default = "8"
+}
+
 # Network configuration
 
 # The VPC to use for the Fargate cluster

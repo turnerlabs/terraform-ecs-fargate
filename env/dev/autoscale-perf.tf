@@ -46,18 +46,6 @@ variable "ecs_as_cpu_high_threshold_per" {
   default = "80"
 }
 
-// The minimum number of containers that should be running.
-// Must be at least 1.
-// For production, consider using at least "2".
-variable "ecs_autoscale_min_instances" {
-  default = "1"
-}
-
-// The maximum number of containers that should be running.
-variable "ecs_autoscale_max_instances" {
-  default = "8"
-}
-
 resource "aws_cloudwatch_metric_alarm" "cpu_utilization_high" {
   alarm_name          = "${var.app}-${var.environment}-CPU-Utilization-High-${var.ecs_as_cpu_high_threshold_per}"
   comparison_operator = "GreaterThanOrEqualToThreshold"
@@ -92,14 +80,6 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_low" {
   }
 
   alarm_actions = ["${aws_appautoscaling_policy.app_down.arn}"]
-}
-
-resource "aws_appautoscaling_target" "app_scale_target" {
-  service_namespace  = "ecs"
-  resource_id        = "service/${aws_ecs_cluster.app.name}/${aws_ecs_service.app.name}"
-  scalable_dimension = "ecs:service:DesiredCount"
-  max_capacity       = "${var.ecs_autoscale_max_instances}"
-  min_capacity       = "${var.ecs_autoscale_min_instances}"
 }
 
 resource "aws_appautoscaling_policy" "app_up" {

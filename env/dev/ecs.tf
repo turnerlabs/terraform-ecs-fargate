@@ -27,6 +27,14 @@ variable "default_backend_image" {
   default = "quay.io/turner/turner-defaultbackend:0.2.0"
 }
 
+resource "aws_appautoscaling_target" "app_scale_target" {
+  service_namespace  = "ecs"
+  resource_id        = "service/${aws_ecs_cluster.app.name}/${aws_ecs_service.app.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  max_capacity       = "${var.ecs_autoscale_max_instances}"
+  min_capacity       = "${var.ecs_autoscale_min_instances}"
+}
+
 resource "aws_ecs_task_definition" "app" {
   family                   = "${var.app}-${var.environment}"
   requires_compatibilities = ["FARGATE"]
