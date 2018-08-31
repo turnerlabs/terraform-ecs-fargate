@@ -3,8 +3,8 @@
  * Common variables to use in various Terraform files (*.tf)
  */
 
- # The AWS region to use for the dev environment's infrastructure
- # Currently, Fargate is only available in `us-east-1`.
+# The AWS region to use for the dev environment's infrastructure
+# Currently, Fargate is only available in `us-east-1`.
 variable "region" {
   default = "us-east-1"
 }
@@ -33,18 +33,6 @@ variable "lb_port" {
 # The load balancer protocol
 variable "lb_protocol" {
   default = "HTTP"
-}
-
-# The minimum number of containers that should be running.
-# Must be at least 1.
-# For production, consider using at least "2".
-variable "ecs_autoscale_min_instances" {
-  default = "1"
-}
-
-# The maximum number of containers that should be running.
-variable "ecs_autoscale_max_instances" {
-  default = "8"
 }
 
 # Network configuration

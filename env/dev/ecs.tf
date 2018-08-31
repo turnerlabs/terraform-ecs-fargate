@@ -12,7 +12,7 @@
  * migrated the real application containers to the task definition.
  */
 
- # How many containers to run
+# How many containers to run
 variable "replicas" {
   default = "1"
 }
@@ -20,6 +20,18 @@ variable "replicas" {
 # The name of the container to run
 variable "container_name" {
   default = "app"
+}
+
+# The minimum number of containers that should be running.
+# Must be at least 1.
+# For production, consider using at least "2".
+variable "ecs_autoscale_min_instances" {
+  default = "1"
+}
+
+# The maximum number of containers that should be running.
+variable "ecs_autoscale_max_instances" {
+  default = "8"
 }
 
 resource "aws_ecs_cluster" "app" {
