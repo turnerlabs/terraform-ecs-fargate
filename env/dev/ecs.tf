@@ -12,6 +12,16 @@
  * migrated the real application containers to the task definition.
  */
 
+ # How many containers to run
+variable "replicas" {
+  default = "1"
+}
+
+# The name of the container to run
+variable "container_name" {
+  default = "app"
+}
+
 resource "aws_ecs_cluster" "app" {
   name = "${var.app}-${var.environment}"
 }

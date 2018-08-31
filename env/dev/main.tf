@@ -7,17 +7,15 @@ terraform {
   }
 }
 
+# The AWS Profile to use
+variable "aws_profile" {}
+
 provider "aws" {
   region  = "${var.region}"
   profile = "${var.aws_profile}"
 }
 
 # output
-
-# The load balancer DNS name
-output "lb_dns" {
-  value = "${aws_alb.main.dns_name}"
-}
 
 # Command to view the status of the Fargate service
 output "status" {
