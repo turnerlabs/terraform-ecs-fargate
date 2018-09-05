@@ -18,7 +18,6 @@ prompts:
     default: "yes"
     filesToDeleteIfNo:
       - "autoscale-time.tf"
-      - "autoscale-time.zip"
 
   - question: "Would you like an IAM user that can be used for CI/CD pipelines?"
     default: "no"
