@@ -1,6 +1,6 @@
 # Environment Dev Terraform
 
-Creates the dev environment's infrastructure. These templates are designed to be customized.  
+Creates the dev environment's infrastructure. These templates are designed to be customized.
 The optional components can be removed by simply deleting the `.tf` file.
 
 
@@ -46,8 +46,8 @@ $ terraform apply
 | deregistration_delay | The amount time for Elastic Load Balancing to wait before changing the state of a deregistering target from draining to unused | string | `30` | no |
 | ecs_as_cpu_high_threshold_per | If the average CPU utilization over a minute rises to this threshold, the number of containers will be increased (but not above ecs_autoscale_max_instances). | string | `80` | no |
 | ecs_as_cpu_low_threshold_per | If the average CPU utilization over a minute drops to this threshold, the number of containers will be reduced (but not below ecs_autoscale_min_instances). | string | `20` | no |
-| ecs_autoscale_max_instances | The maximum number of containers that should be running. | string | `8` | no |
-| ecs_autoscale_min_instances | The minimum number of containers that should be running. Must be at least 1. For production, consider using at least "2". | string | `1` | no |
+| ecs_autoscale_max_instances | The maximum number of containers that should be running. used by both autoscale-perf.tf and autoscale.time.tf | string | `8` | no |
+| ecs_autoscale_min_instances | The minimum number of containers that should be running. Must be at least 1. used by both autoscale-perf.tf and autoscale.time.tf For production, consider using at least "2". | string | `1` | no |
 | environment | The environment that is being built | string | - | yes |
 | health_check | The path to the health check for the load balancer to know if the container(s) are ready | string | - | yes |
 | health_check_interval | How often to check the liveliness of the container | string | `30` | no |
@@ -63,12 +63,11 @@ $ terraform apply
 | public_subnets | The public subnets, minimum of 2, that are a part of the VPC(s) | string | - | yes |
 | region | The AWS region to use for the dev environment's infrastructure Currently, Fargate is only available in `us-east-1`. | string | `us-east-1` | no |
 | replicas | How many containers to run | string | `1` | no |
-| saml_role | The SAML role to use | string | - | yes |
-| scale_down_count | The number of containers to scale down to | string | `0` | no |
+| saml_role | The SAML role to use for adding users to the ECR policy | string | - | yes |
 | scale_down_cron | Default scale down at 7 pm every day | string | `cron(0 23 * * ? *)` | no |
-| scale_up_count | The number of containers to scale up to | string | `1` | no |
+| scale_down_max_capacity | The maximum number of containers to scale down to. | string | `0` | no |
+| scale_down_min_capacity | The mimimum number of containers to scale down to. Set this and `scale_down_max_capacity` to 0 to turn off service on the `scale_down_cron` schedule. | string | `0` | no |
 | scale_up_cron | Default scale up at 7 am weekdays, this is UTC so it doesn't adjust to daylight savings https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html | string | `cron(0 11 ? * MON-FRI *)` | no |
-| slack_webhook | An endpoint that will receive scale up/down notifications | string | `` | no |
 | tags | Tags for the infrastructure | map | - | yes |
 | vpc | The VPC to use for the Fargate cluster | string | - | yes |
 
