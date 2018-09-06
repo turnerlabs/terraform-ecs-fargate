@@ -2,6 +2,8 @@
 
 A set of Terraform templates used for provisioning web application stacks on [AWS ECS Fargate][fargate].
 
+![diagram](diagram.png)
+
 The templates are designed to be customized.  The optional components can be removed by simply deleting the `.tf` file.
 
 The templates are used for managing infrastructure concerns and, as such, the templates deploy a [default backend docker image](env/dev/ecs.tf#L26).  We recommend using the [fargate CLI](https://github.com/turnerlabs/fargate) for managing application concerns like deploying your actual application images and environment variables on top of this infrastructure.  The fargate CLI can be used to deploy applications from your laptop or in CI/CD pipelines.
