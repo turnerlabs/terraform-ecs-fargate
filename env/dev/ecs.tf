@@ -12,7 +12,7 @@
  * migrated the real application containers to the task definition.
  */
 
- # How many containers to run
+# How many containers to run
 variable "replicas" {
   default = "1"
 }
@@ -20,6 +20,20 @@ variable "replicas" {
 # The name of the container to run
 variable "container_name" {
   default = "app"
+}
+
+# The minimum number of containers that should be running.
+# Must be at least 1.
+# used by both autoscale-perf.tf and autoscale.time.tf
+# For production, consider using at least "2".
+variable "ecs_autoscale_min_instances" {
+  default = "1"
+}
+
+# The maximum number of containers that should be running.
+# used by both autoscale-perf.tf and autoscale.time.tf
+variable "ecs_autoscale_max_instances" {
+  default = "8"
 }
 
 resource "aws_ecs_cluster" "app" {
@@ -35,6 +49,14 @@ resource "aws_ecs_cluster" "app" {
 # https://github.com/turnerlabs/turner-defaultbackend
 variable "default_backend_image" {
   default = "quay.io/turner/turner-defaultbackend:0.2.0"
+}
+
+resource "aws_appautoscaling_target" "app_scale_target" {
+  service_namespace  = "ecs"
+  resource_id        = "service/${aws_ecs_cluster.app.name}/${aws_ecs_service.app.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  max_capacity       = "${var.ecs_autoscale_max_instances}"
+  min_capacity       = "${var.ecs_autoscale_min_instances}"
 }
 
 resource "aws_ecs_task_definition" "app" {
