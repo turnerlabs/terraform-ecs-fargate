@@ -28,7 +28,7 @@ variable "scale_down_max_capacity" {
 # Scales service back up to preferred running capacity defined by the
 # `ecs_autoscale_min_instances` and `ecs_autoscale_max_instances` variables
 resource "aws_appautoscaling_scheduled_action" "app_autoscale_time_up" {
-  name = "app-autoscale-time-up"
+  name = "app-autoscale-time-up-${var.app}-${var.environment}"
 
   service_namespace  = "${aws_appautoscaling_target.app_scale_target.service_namespace}"
   resource_id        = "${aws_appautoscaling_target.app_scale_target.resource_id}"
@@ -44,7 +44,7 @@ resource "aws_appautoscaling_scheduled_action" "app_autoscale_time_up" {
 # Scales service down to capacity defined by the
 # `scale_down_min_capacity` and `scale_down_max_capacity` variables.
 resource "aws_appautoscaling_scheduled_action" "app_autoscale_time_down" {
-  name = "app-autoscale-time-down"
+  name = "app-autoscale-time-down-${var.app}-${var.environment}"
 
   service_namespace  = "${aws_appautoscaling_target.app_scale_target.service_namespace}"
   resource_id        = "${aws_appautoscaling_target.app_scale_target.resource_id}"
