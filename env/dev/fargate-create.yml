@@ -1,0 +1,31 @@
+
+# this file is used by fargate-create (https://github.com/turnerlabs/fargate-create)
+# if not using fargate-create, this file can be ignored/deleted
+
+prompts:
+
+  - question: "Would you like HTTPS support (requires a certificate)?"
+    default: "no"
+    filesToDeleteIfNo:
+      - "lb-https.tf"
+
+  - question: "Would you like performance-based auto-scaling?"
+    default: "yes"
+    filesToDeleteIfNo:
+      - "autoscale-perf.tf"
+
+  - question: "Would you like time-based auto-scaling?"
+    default: "yes"
+    filesToDeleteIfNo:
+      - "autoscale-time.tf"
+
+  - question: "Would you like an IAM user that can be used for CI/CD pipelines?"
+    default: "no"
+    filesToDeleteIfNo:
+      - "cicd.tf"
+
+  - question: "Would you like to ship your container logs to logz.io (requires a key)?"
+    default: "no"
+    filesToDeleteIfNo:
+      - "logs-logzio.tf"      
+      - "logs-logzio.zip"

@@ -34,28 +34,16 @@
  *
  */
 
-// If the average CPU utilization over a minute drops to this threshold,
-// the number of containers will be reduced (but not below ecs_autoscale_min_instances).
+# If the average CPU utilization over a minute drops to this threshold,
+# the number of containers will be reduced (but not below ecs_autoscale_min_instances).
 variable "ecs_as_cpu_low_threshold_per" {
   default = "20"
 }
 
-// If the average CPU utilization over a minute rises to this threshold,
-// the number of containers will be increased (but not above ecs_autoscale_max_instances).
+# If the average CPU utilization over a minute rises to this threshold,
+# the number of containers will be increased (but not above ecs_autoscale_max_instances).
 variable "ecs_as_cpu_high_threshold_per" {
   default = "80"
-}
-
-// The minimum number of containers that should be running.
-// Must be at least 1.
-// For production, consider using at least "2".
-variable "ecs_autoscale_min_instances" {
-  default = "1"
-}
-
-// The maximum number of containers that should be running.
-variable "ecs_autoscale_max_instances" {
-  default = "8"
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu_utilization_high" {
@@ -94,19 +82,11 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_low" {
   alarm_actions = ["${aws_appautoscaling_policy.app_down.arn}"]
 }
 
-resource "aws_appautoscaling_target" "app_scale_target" {
-  service_namespace  = "ecs"
-  resource_id        = "service/${aws_ecs_cluster.app.name}/${aws_ecs_service.app.name}"
-  scalable_dimension = "ecs:service:DesiredCount"
-  max_capacity       = "${var.ecs_autoscale_max_instances}"
-  min_capacity       = "${var.ecs_autoscale_min_instances}"
-}
-
 resource "aws_appautoscaling_policy" "app_up" {
   name               = "app-scale-up"
-  service_namespace  = "ecs"
-  resource_id        = "service/${aws_ecs_cluster.app.name}/${aws_ecs_service.app.name}"
-  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "${aws_appautoscaling_target.app_scale_target.service_namespace}"
+  resource_id        = "${aws_appautoscaling_target.app_scale_target.resource_id}"
+  scalable_dimension = "${aws_appautoscaling_target.app_scale_target.scalable_dimension}"
 
   step_scaling_policy_configuration {
     adjustment_type         = "ChangeInCapacity"
@@ -118,17 +98,13 @@ resource "aws_appautoscaling_policy" "app_up" {
       scaling_adjustment          = 1
     }
   }
-
-  depends_on = [
-    "aws_appautoscaling_target.app_scale_target",
-  ]
 }
 
 resource "aws_appautoscaling_policy" "app_down" {
   name               = "app-scale-down"
-  service_namespace  = "ecs"
-  resource_id        = "service/${aws_ecs_cluster.app.name}/${aws_ecs_service.app.name}"
-  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "${aws_appautoscaling_target.app_scale_target.service_namespace}"
+  resource_id        = "${aws_appautoscaling_target.app_scale_target.resource_id}"
+  scalable_dimension = "${aws_appautoscaling_target.app_scale_target.scalable_dimension}"
 
   step_scaling_policy_configuration {
     adjustment_type         = "ChangeInCapacity"
@@ -140,8 +116,4 @@ resource "aws_appautoscaling_policy" "app_down" {
       scaling_adjustment          = -1
     }
   }
-
-  depends_on = [
-    "aws_appautoscaling_target.app_scale_target",
-  ]
 }

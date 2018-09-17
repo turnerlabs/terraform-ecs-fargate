@@ -12,12 +12,36 @@
  * migrated the real application containers to the task definition.
  */
 
+# How many containers to run
+variable "replicas" {
+  default = "1"
+}
+
+# The name of the container to run
+variable "container_name" {
+  default = "app"
+}
+
+# The minimum number of containers that should be running.
+# Must be at least 1.
+# used by both autoscale-perf.tf and autoscale.time.tf
+# For production, consider using at least "2".
+variable "ecs_autoscale_min_instances" {
+  default = "1"
+}
+
+# The maximum number of containers that should be running.
+# used by both autoscale-perf.tf and autoscale.time.tf
+variable "ecs_autoscale_max_instances" {
+  default = "8"
+}
+
 resource "aws_ecs_cluster" "app" {
   name = "${var.app}-${var.environment}"
 }
 
-# the default docker image to deploy with the infrastructure
-# note that you can use the fargate CLI for application concerns
+# The default docker image to deploy with the infrastructure.
+# Note that you can use the fargate CLI for application concerns
 # like deploying actual application images and environment variables
 # on top of the infrastructure provisioned by this template
 # https://github.com/turnerlabs/fargate
@@ -25,6 +49,14 @@ resource "aws_ecs_cluster" "app" {
 # https://github.com/turnerlabs/turner-defaultbackend
 variable "default_backend_image" {
   default = "quay.io/turner/turner-defaultbackend:0.2.0"
+}
+
+resource "aws_appautoscaling_target" "app_scale_target" {
+  service_namespace  = "ecs"
+  resource_id        = "service/${aws_ecs_cluster.app.name}/${aws_ecs_service.app.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  max_capacity       = "${var.ecs_autoscale_max_instances}"
+  min_capacity       = "${var.ecs_autoscale_min_instances}"
 }
 
 resource "aws_ecs_task_definition" "app" {
@@ -47,7 +79,8 @@ resource "aws_ecs_task_definition" "app" {
     "portMappings": [
       {
         "protocol": "tcp",
-        "containerPort": ${var.container_port}
+        "containerPort": ${var.container_port},
+        "hostPort": ${var.container_port}
       }
     ],
     "environment": [
@@ -83,11 +116,6 @@ resource "aws_ecs_task_definition" "app" {
   }
 ]
 DEFINITION
-
-  # # uncomment after first app deployment
-  # lifecycle {
-  #   ignore_changes = ["container_definitions"]
-  # }
 }
 
 resource "aws_ecs_service" "app" {
@@ -113,10 +141,11 @@ resource "aws_ecs_service" "app" {
     "aws_alb_listener.http",
   ]
 
-  # # uncomment after first app deployment
-  # lifecycle {
-  #   ignore_changes = ["task_definition"]
-  # }
+  # [after initial apply] don't override changes made to task_definition
+  # from outside of terrraform (i.e.; fargate cli)
+  lifecycle {
+    ignore_changes = ["task_definition"]
+  }
 }
 
 # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_execution_IAM_role.html
