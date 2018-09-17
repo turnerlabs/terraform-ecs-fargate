@@ -29,3 +29,8 @@ prompts:
     filesToDeleteIfNo:
       - "logs-logzio.tf"      
       - "logs-logzio.zip"
+
+  - question: "Would you like an integrated Secrets Manager secret?"
+    default: "no"
+    filesToDeleteIfNo:
+      - "secretsmanager.tf"
