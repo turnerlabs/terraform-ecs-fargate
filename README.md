@@ -40,6 +40,7 @@ that is needed.
 | [autoscale-perf.tf][edap] | Performance-based auto scaling | Yes |
 | [autoscale-time.tf][edat] | Time-based auto scaling | Yes |
 | [logs-logzio.tf][edll] | Ship container logs to logz.io | Yes |
+| [secretsmanager.tf][edsm] | Add a base secret to Secretsmanager | Yes |
 
 
 ## Usage
@@ -130,5 +131,6 @@ $ fargate-create -f terraform.tfvars
 [edap]: ./env/dev/autoscale-perf.tf
 [edat]: ./env/dev/autoscale-time.tf
 [edll]: ./env/dev/logs-logzio.tf
+[edsm]: ./env/dev/secretsmanager.tf
 [base]: ./base/README.md
 [env-dev]: ./env/dev/README.md

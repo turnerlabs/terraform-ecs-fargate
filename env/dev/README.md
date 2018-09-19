@@ -20,6 +20,7 @@ The optional components can be removed by simply deleting the `.tf` file.
 | [autoscale-perf.tf][edap] | Performance-based auto scaling | Yes |
 | [autoscale-time.tf][edat] | Time-based auto scaling | Yes |
 | [logs-logzio.tf][edll] | Ship container logs to logz.io | Yes |
+| [secretsmanager.tf][edsm] | Add a base secret to Secretsmanager | Yes |
 
 
 ## Usage
@@ -98,5 +99,6 @@ $ terraform apply
 [edap]: autoscale-perf.tf
 [edat]: autoscale-time.tf
 [edll]: logs-logzio.tf
+[edsm]: secretsmanager.tf
 [alb-docs]: https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html
 [up]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html
