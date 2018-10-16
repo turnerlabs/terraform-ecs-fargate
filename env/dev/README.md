@@ -69,6 +69,7 @@ $ terraform apply
 | scale_down_max_capacity | The maximum number of containers to scale down to. | string | `0` | no |
 | scale_down_min_capacity | The mimimum number of containers to scale down to. Set this and `scale_down_max_capacity` to 0 to turn off service on the `scale_down_cron` schedule. | string | `0` | no |
 | scale_up_cron | Default scale up at 7 am weekdays, this is UTC so it doesn't adjust to daylight savings https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html | string | `cron(0 11 ? * MON-FRI *)` | no |
+| secrets_saml_users | The users (email addresses) from the saml role to give access | list | - | yes |
 | tags | Tags for the infrastructure | map | - | yes |
 | vpc | The VPC to use for the Fargate cluster | string | - | yes |
 

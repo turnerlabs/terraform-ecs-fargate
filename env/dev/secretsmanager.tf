@@ -267,8 +267,7 @@ data "aws_iam_policy_document" "sm_resource_policy_doc" {
   }
 }
 
-# The users from the saml role to give access
-
+# The users (email addresses) from the saml role to give access
 variable "secrets_saml_users" {
   type = "list"
 }
