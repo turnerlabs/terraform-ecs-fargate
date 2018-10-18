@@ -1,4 +1,4 @@
 .terraform
 terraform.d
 node_modules
-terraform.tfstate*
+env/**/terraform.tfstate*
