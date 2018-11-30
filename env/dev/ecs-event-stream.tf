@@ -89,3 +89,28 @@ resource "aws_iam_role_policy_attachment" "ecs_event_stream" {
   role       = "${aws_iam_role.ecs_event_stream.name}"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
+
+# cloudwatch dashboard with logs insights query
+resource "aws_cloudwatch_dashboard" "ecs-event-stream" {
+  dashboard_name = "${var.app}-${var.environment}-ecs-event-stream"
+
+  dashboard_body = <<EOF
+{
+  "widgets": [
+    {
+      "type": "log",
+      "x": 0,
+      "y": 0,
+      "width": 24,
+      "height": 18,
+      "properties": {
+        "query": "SOURCE '/aws/lambda/${var.app}-${var.environment}-ecs-event-stream' | fields @timestamp as time, detail.desiredStatus as desired, detail.lastStatus as latest, detail.containers.0.reason as reason, detail.taskDefinitionArn as task_definition\n| filter @type != \"START\" and @type != \"END\" and @type != \"REPORT\"\n| sort detail.updatedAt desc, detail.version desc\n| limit 100",
+        "region": "us-east-1",
+        "title": "ECS Event Log"
+      }
+    }
+  ]
+}
+
+EOF
+}
