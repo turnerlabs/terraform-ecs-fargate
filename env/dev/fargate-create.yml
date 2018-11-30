@@ -34,3 +34,8 @@ prompts:
     default: "no"
     filesToDeleteIfNo:
       - "secretsmanager.tf"
+
+  - question: "Would you like access to the full ECS event logs?"
+    default: "yes"
+    filesToDeleteIfNo:
+      - "ecs-event-stream.tf"      
