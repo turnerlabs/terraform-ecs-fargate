@@ -2,8 +2,9 @@
  * ECS Event Stream
  * This component gives you full access to the ECS event logs
  * for your cluster by creating a cloudwatch event rule that listens for 
- * events for this cluster and calls a lambda that writes them to cloudwatch logs 
- * (which can be queried by other tools, like fargate cli).
+ * events for this cluster and calls a lambda that writes them to cloudwatch logs.
+ * It then adds a cloudwatch dashboard the displays the results of a
+ * logs insights query against the lambda logs
  */
 
 # cw event rule
