@@ -40,6 +40,7 @@ that is needed.
 | [autoscale-time.tf][edat] | Time-based auto scaling | Yes |
 | [logs-logzio.tf][edll] | Ship container logs to logz.io | Yes |
 | [secretsmanager.tf][edsm] | Add a base secret to Secretsmanager | Yes |
+| [ecs-event-stream.tf][ees] | Add an ECS event log dashboard | Yes |
 
 
 ## Usage
@@ -135,5 +136,6 @@ $ fargate-create -f terraform.tfvars
 [edat]: ./env/dev/autoscale-time.tf
 [edll]: ./env/dev/logs-logzio.tf
 [edsm]: ./env/dev/secretsmanager.tf
+[ees]: ./env/dev/ecs-event-stream.tf
 [base]: ./base/README.md
 [env-dev]: ./env/dev/README.md
