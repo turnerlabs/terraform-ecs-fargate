@@ -38,6 +38,7 @@ variable "ecs_autoscale_max_instances" {
 
 resource "aws_ecs_cluster" "app" {
   name = "${var.app}-${var.environment}"
+  tags = "${var.tags}"
 }
 
 # The default docker image to deploy with the infrastructure.
