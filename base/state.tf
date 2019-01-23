@@ -10,7 +10,7 @@
 
 # s3 bucket for tf remote state
 module "tf_remote_state" {
-  source = "github.com/turnerlabs/terraform-remote-state?ref=v2.0.0"
+  source = "github.com/turnerlabs/terraform-remote-state?ref=v2.2.0"
 
   role        = "${var.saml_role}"
   application = "${var.app}"
