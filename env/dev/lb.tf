@@ -81,7 +81,7 @@ resource "aws_s3_bucket" "lb_access_logs" {
     id                                     = "cleanup"
     enabled                                = true
     abort_incomplete_multipart_upload_days = 1
-    prefix                                 = "/"
+    prefix                                 = ""
 
     expiration {
       days = 3
