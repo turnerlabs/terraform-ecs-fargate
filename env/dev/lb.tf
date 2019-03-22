@@ -32,6 +32,10 @@ variable "health_check_matcher" {
   default = "200"
 }
 
+variable "lb_access_logs_expiration_days" {
+  default = "3"
+}
+
 resource "aws_alb" "main" {
   name = "${var.app}-${var.environment}"
 
@@ -81,10 +85,10 @@ resource "aws_s3_bucket" "lb_access_logs" {
     id                                     = "cleanup"
     enabled                                = true
     abort_incomplete_multipart_upload_days = 1
-    prefix                                 = "/"
+    prefix                                 = ""
 
     expiration {
-      days = 3
+      days = "${var.lb_access_logs_expiration_days}"
     }
   }
 
