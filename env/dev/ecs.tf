@@ -117,6 +117,8 @@ resource "aws_ecs_task_definition" "app" {
   }
 ]
 DEFINITION
+
+  tags = "${var.tags}"
 }
 
 resource "aws_ecs_service" "app" {
@@ -136,6 +138,10 @@ resource "aws_ecs_service" "app" {
     container_name   = "${var.container_name}"
     container_port   = "${var.container_port}"
   }
+
+  tags                    = "${var.tags}"
+  enable_ecs_managed_tags = true
+  propagate_tags          = "SERVICE"
 
   # workaround for https://github.com/hashicorp/terraform/issues/12634
   depends_on = [
