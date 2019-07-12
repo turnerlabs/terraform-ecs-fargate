@@ -45,3 +45,11 @@ variable "private_subnets" {}
 
 # The public subnets, minimum of 2, that are a part of the VPC(s)
 variable "public_subnets" {}
+
+# The CPU limit for this container definition
+variable "cpu" {}
+
+# The memory limit for this container definition
+variable "memory" {}
+# The ID of the hosted zone to contain this record. (Route53)
+variable "zone_id" {}
