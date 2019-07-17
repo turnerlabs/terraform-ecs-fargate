@@ -6,15 +6,16 @@
 
 # create an ECR repo at the app/image level
 resource "aws_ecr_repository" "app" {
-  name = "${var.app}"
+  name = var.app
 }
 
-data "aws_caller_identity" "current" {}
+data "aws_caller_identity" "current" {
+}
 
 # grant access to saml users
 resource "aws_ecr_repository_policy" "app" {
-  repository = "${aws_ecr_repository.app.name}"
-  policy     = "${data.aws_iam_policy_document.ecr.json}"
+  repository = aws_ecr_repository.app.name
+  policy     = data.aws_iam_policy_document.ecr.json
 }
 
 data "aws_iam_policy_document" "ecr" {

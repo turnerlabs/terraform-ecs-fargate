@@ -4,7 +4,7 @@ resource "aws_iam_user" "cicd" {
 }
 
 resource "aws_iam_access_key" "cicd_keys" {
-  user = "${aws_iam_user.cicd.name}"
+  user = aws_iam_user.cicd.name
 }
 
 # grant required permissions to deploy
@@ -24,7 +24,7 @@ data "aws_iam_policy_document" "cicd_policy" {
     ]
 
     resources = [
-      "${data.aws_ecr_repository.ecr.arn}",
+      data.aws_ecr_repository.ecr.arn,
     ]
   }
 
@@ -54,20 +54,20 @@ data "aws_iam_policy_document" "cicd_policy" {
     ]
 
     resources = [
-      "${aws_iam_role.app_role.arn}",
-      "${aws_iam_role.ecsTaskExecutionRole.arn}",
+      aws_iam_role.app_role.arn,
+      aws_iam_role.ecsTaskExecutionRole.arn,
     ]
   }
 }
 
 resource "aws_iam_user_policy" "cicd_user_policy" {
   name   = "${var.app}_${var.environment}_cicd"
-  user   = "${aws_iam_user.cicd.name}"
-  policy = "${data.aws_iam_policy_document.cicd_policy.json}"
+  user   = aws_iam_user.cicd.name
+  policy = data.aws_iam_policy_document.cicd_policy.json
 }
 
 data "aws_ecr_repository" "ecr" {
-  name = "${var.app}"
+  name = var.app
 }
 
 # The AWS keys for the CICD user to use in a build system
@@ -77,5 +77,5 @@ output "cicd_keys" {
 
 # The URL for the docker image repo in ECR
 output "docker_registry" {
-  value = "${data.aws_ecr_repository.ecr.repository_url}"
+  value = data.aws_ecr_repository.ecr.repository_url
 }
