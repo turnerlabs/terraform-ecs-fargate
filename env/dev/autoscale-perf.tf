@@ -54,14 +54,14 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_high" {
   namespace           = "AWS/ECS"
   period              = "60"
   statistic           = "Average"
-  threshold           = "${var.ecs_as_cpu_high_threshold_per}"
+  threshold           = var.ecs_as_cpu_high_threshold_per
 
-  dimensions {
-    ClusterName = "${aws_ecs_cluster.app.name}"
-    ServiceName = "${aws_ecs_service.app.name}"
+  dimensions = {
+    ClusterName = aws_ecs_cluster.app.name
+    ServiceName = aws_ecs_service.app.name
   }
 
-  alarm_actions = ["${aws_appautoscaling_policy.app_up.arn}"]
+  alarm_actions = [aws_appautoscaling_policy.app_up.arn]
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu_utilization_low" {
@@ -72,21 +72,21 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_low" {
   namespace           = "AWS/ECS"
   period              = "60"
   statistic           = "Average"
-  threshold           = "${var.ecs_as_cpu_low_threshold_per}"
+  threshold           = var.ecs_as_cpu_low_threshold_per
 
-  dimensions {
-    ClusterName = "${aws_ecs_cluster.app.name}"
-    ServiceName = "${aws_ecs_service.app.name}"
+  dimensions = {
+    ClusterName = aws_ecs_cluster.app.name
+    ServiceName = aws_ecs_service.app.name
   }
 
-  alarm_actions = ["${aws_appautoscaling_policy.app_down.arn}"]
+  alarm_actions = [aws_appautoscaling_policy.app_down.arn]
 }
 
 resource "aws_appautoscaling_policy" "app_up" {
   name               = "app-scale-up"
-  service_namespace  = "${aws_appautoscaling_target.app_scale_target.service_namespace}"
-  resource_id        = "${aws_appautoscaling_target.app_scale_target.resource_id}"
-  scalable_dimension = "${aws_appautoscaling_target.app_scale_target.scalable_dimension}"
+  service_namespace  = aws_appautoscaling_target.app_scale_target.service_namespace
+  resource_id        = aws_appautoscaling_target.app_scale_target.resource_id
+  scalable_dimension = aws_appautoscaling_target.app_scale_target.scalable_dimension
 
   step_scaling_policy_configuration {
     adjustment_type         = "ChangeInCapacity"
@@ -102,9 +102,9 @@ resource "aws_appautoscaling_policy" "app_up" {
 
 resource "aws_appautoscaling_policy" "app_down" {
   name               = "app-scale-down"
-  service_namespace  = "${aws_appautoscaling_target.app_scale_target.service_namespace}"
-  resource_id        = "${aws_appautoscaling_target.app_scale_target.resource_id}"
-  scalable_dimension = "${aws_appautoscaling_target.app_scale_target.scalable_dimension}"
+  service_namespace  = aws_appautoscaling_target.app_scale_target.service_namespace
+  resource_id        = aws_appautoscaling_target.app_scale_target.resource_id
+  scalable_dimension = aws_appautoscaling_target.app_scale_target.scalable_dimension
 
   step_scaling_policy_configuration {
     adjustment_type         = "ChangeInCapacity"

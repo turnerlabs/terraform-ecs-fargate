@@ -11,14 +11,17 @@ variable "region" {
 }
 
 # The AWS profile to use, this would be the same value used in AWS_PROFILE.
-variable "aws_profile" {}
+variable "aws_profile" {
+}
 
 # The role that will have access to the S3 bucket, this should be a role that all
 # members of the team have access to.
-variable "saml_role" {}
+variable "saml_role" {
+}
 
 # Name of the application. This value should usually match the application tag below.
-variable "app" {}
+variable "app" {
+}
 
 # A map of the tags to apply to various resources. The required tags are:
 # `application`, name of the app;
@@ -27,5 +30,5 @@ variable "app" {}
 # `contact-email`, contact email for the _team_;
 # and `customer`, who the application was create for.
 variable "tags" {
-  type = "map"
+  type = map(string)
 }
