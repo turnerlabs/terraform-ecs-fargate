@@ -55,23 +55,23 @@ EOF
 
 #function code from logzio: https://github.com/logzio/cloudwatch-logs-shipper-lambda
 resource "aws_lambda_function" "lambda_logz" {
-function_name    = "${var.app}-${var.environment}-logz"
-description      = "Sends Cloudwatch logs to logz."
-runtime          = "python2.7"
-timeout          = 60
-memory_size      = 512
-role             = aws_iam_role.iam_for_lambda_logz.arn
-handler          = "lambda_function.lambda_handler"
-filename         = "logs-logzio.zip"
-source_code_hash = filebase64sha256("logs-logzio.zip")
+  function_name    = "${var.app}-${var.environment}-logz"
+  description      = "Sends Cloudwatch logs to logz."
+  runtime          = "python2.7"
+  timeout          = 60
+  memory_size      = 512
+  role             = aws_iam_role.iam_for_lambda_logz.arn
+  handler          = "lambda_function.lambda_handler"
+  filename         = "logs-logzio.zip"
+  source_code_hash = filebase64sha256("logs-logzio.zip")
 
-tags = var.tags
+  tags = var.tags
 
-environment {
-  variables = {
-    TOKEN = var.logz_token
-    URL   = var.logz_url
-    TYPE  = "elb"
+  environment {
+    variables = {
+      TOKEN = var.logz_token
+      URL   = var.logz_url
+      TYPE  = "elb"
     }
   }
 }
