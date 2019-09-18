@@ -79,7 +79,7 @@ resource "aws_kms_key" "ssm" {
 }
 
 resource "aws_kms_alias" "ssm" {
-  name          = "alias/${var.app}-${var.environment}-ssm"
+  name          = "alias/${var.app}-${var.environment}"
   target_key_id = "${aws_kms_key.ssm.id}"
 }
 
@@ -188,6 +188,14 @@ resource "aws_iam_role_policy_attachment" "ecsTaskExecutionRole_ssm" {
   policy_arn = aws_iam_policy.ecsTaskExecutionRole_ssm.arn
 }
 
-output "add_ssm_secret" {
-  value = "aws ssm put-parameter --type \"SecureString\" --name \"/${var.app}/${var.environment}/PASSWORD\" --value \"password\" --key-id \"${aws_kms_key.ssm.arn}\" --overwrite"
+output "ssm_add_secret" {
+  value = "aws ssm put-parameter --overwrite --type \"SecureString\" --key-id \"${aws_kms_alias.ssm.name}\" --name \"/${var.app}/${var.environment}/PASSWORD\" --value \"password\""
+}
+
+output "ssm_add_secret_ref" {
+  value = "fargate service env set --secret PASSWORD=/${var.app}/${var.environment}/PASSWORD"
+}
+
+output "ssm_key_id" {
+  value = aws_kms_key.ssm.key_id
 }
