@@ -87,7 +87,7 @@ create an input vars file (`terraform.tfvars`)
 app = "my-app"
 environment = "dev"
 
-internal = "true"
+internal = true
 container_port = "8080"
 replicas = "1"
 health_check = "/health"
@@ -108,6 +108,11 @@ tags = {
 
 ```shell
 $ fargate-create -f terraform.tfvars
+```
+
+Note that if you would like to use Terraform 0.11.x, you can use the following command.
+```shell
+$ fargate-create -t git@github.com:turnerlabs/terraform-ecs-fargate?ref=v0.11
 ```
 
 
