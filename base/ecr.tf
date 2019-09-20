@@ -4,9 +4,15 @@
  * https://aws.amazon.com/ecr/
  */
 
+# The tag mutability setting for the repository (defaults to IMMUTABLE)
+variable "image_tag_mutability" {
+  default = "IMMUTABLE"
+}
+
 # create an ECR repo at the app/image level
 resource "aws_ecr_repository" "app" {
-  name = "${var.app}"
+  name                 = "${var.app}"
+  image_tag_mutability = "${var.image_tag_mutability}"
 }
 
 data "aws_caller_identity" "current" {}
