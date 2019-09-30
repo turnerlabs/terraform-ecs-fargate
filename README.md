@@ -39,7 +39,8 @@ that is needed.
 | [autoscale-perf.tf][edap] | Performance-based auto scaling | Yes |
 | [autoscale-time.tf][edat] | Time-based auto scaling | Yes |
 | [logs-logzio.tf][edll] | Ship container logs to logz.io | Yes |
-| [secretsmanager.tf][edsm] | Add a base secret to Secretsmanager | Yes |
+| [secretsmanager.tf][edsm] | Add a Secrets Manager secret with a CMK KMS key. Also gives app role and ECS task definition role access to read secrets from Secrets Manager | Yes |
+| [ssm-parameters.tf][ssm] | Add a CMK KMS key for use with SSM Parameter Store. Also gives ECS task definition role access to read secrets from parameter store. | Yes |
 | [ecs-event-stream.tf][ees] | Add an ECS event log dashboard | Yes |
 
 
@@ -136,6 +137,7 @@ $ fargate-create -f terraform.tfvars
 [edat]: ./env/dev/autoscale-time.tf
 [edll]: ./env/dev/logs-logzio.tf
 [edsm]: ./env/dev/secretsmanager.tf
+[ssm]: ./env/dev/ssm-parameters.tf
 [ees]: ./env/dev/ecs-event-stream.tf
 [base]: ./base/README.md
 [env-dev]: ./env/dev/README.md
