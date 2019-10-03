@@ -54,8 +54,6 @@ locals {
     "${aws_iam_role.ecsTaskExecutionRole.unique_id}:*",
     local.saml_user_ids,
   ])
-
-  sm_arn = "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:${var.app}-${var.environment}-??????"
 }
 
 # get the saml user info so we can get the unique_id
