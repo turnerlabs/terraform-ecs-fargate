@@ -176,8 +176,14 @@ resource "aws_iam_role_policy_attachment" "ecsTaskExecutionRole_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+variable "logs_retention_in_days" {
+  type        = number
+  default     = 90
+  description = "Specifies the number of days you want to retain log events"
+}
+
 resource "aws_cloudwatch_log_group" "logs" {
   name              = "/fargate/service/${var.app}-${var.environment}"
-  retention_in_days = "14"
+  retention_in_days = var.logs_retention_in_days
   tags              = var.tags
 }
