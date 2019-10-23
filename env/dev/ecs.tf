@@ -148,7 +148,7 @@ resource "aws_ecs_service" "app" {
   depends_on = [aws_alb_listener.http]
 
   # [after initial apply] don't override changes made to task_definition
-  # from outside of terrraform (i.e.; fargate cli)
+  # from outside of terraform (i.e.; fargate cli)
   lifecycle {
     ignore_changes = [task_definition]
   }
