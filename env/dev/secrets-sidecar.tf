@@ -52,7 +52,7 @@ resource "aws_ecs_task_definition" "secrets_sidecar" {
     "essential": true,
     "dependsOn": [
       {
-        "containerName": "secrets_sidecar",
+        "containerName": "secrets",
         "condition": "SUCCESS"
       }
     ],
@@ -106,7 +106,7 @@ resource "aws_ecs_task_definition" "secrets_sidecar" {
     }
   },
   {
-    "name": "secrets_sidecar",
+    "name": "secrets",
     "image": "${var.secret_sidecar_image}",
     "essential": false,
     "environment": [
