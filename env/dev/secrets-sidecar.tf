@@ -145,7 +145,41 @@ DEFINITION
   depends_on = [aws_ecs_task_definition.app]
 }
 
+data "template_file" "secrets_sidecar_deploy" {
+  template = <<EOF
+#!/bin/bash
+set -e
+
+AWS_PROFILE=${aws_profile}
+AWS_DEFAULT_REGION=${region}
+
+echo "backing up running container configuration"
+fargate task describe -t ${current_taskdefinition} > backup.yml
+
+echo "deploying new sidecar configuration"
+fargate service deploy -r ${sidecar_revision}
+
+echo "re-deploying app configuration"
+fargate service deploy -f backup.yml
+fargate service env set -e SECRET=${secret}
+EOF
+
+  vars = {
+    aws_profile            = var.aws_profile
+    region                 = var.region
+    current_taskdefinition = aws_ecs_service.app.task_definition
+    sidecar_revision       = split(":", aws_ecs_task_definition.secrets_sidecar.arn)[6]
+    secret                 = local.secret_file
+  }
+}
+
+resource "local_file" "secrets_sidecar" {
+  filename = "secrets-sidecar-deploy.sh"
+  content  = "${data.template_file.secrets_sidecar_deploy.rendered}"
+}
+
 # command to deploy the secrets sidecar configuration
 output "deploy_secrets_sidecar" {
   value = "fargate service deploy --revision ${split(":", aws_ecs_task_definition.secrets_sidecar.arn)[6]}"
 }
+
