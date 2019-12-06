@@ -150,18 +150,18 @@ data "template_file" "secrets_sidecar_deploy" {
 #!/bin/bash
 set -e
 
-AWS_PROFILE=${aws_profile}
-AWS_DEFAULT_REGION=${region}
+AWS_PROFILE=$${aws_profile}
+AWS_DEFAULT_REGION=$${region}
 
 echo "backing up running container configuration"
-fargate task describe -t ${current_taskdefinition} > backup.yml
+fargate task describe -t $${current_taskdefinition} > backup.yml
 
 echo "deploying new sidecar configuration"
-fargate service deploy -r ${sidecar_revision}
+fargate service deploy -r $${sidecar_revision}
 
 echo "re-deploying app configuration"
 fargate service deploy -f backup.yml
-fargate service env set -e SECRET=${secret}
+fargate service env set -e SECRET=$${secret}
 EOF
 
   vars = {
@@ -182,4 +182,3 @@ resource "local_file" "secrets_sidecar" {
 output "deploy_secrets_sidecar" {
   value = "fargate service deploy --revision ${split(":", aws_ecs_task_definition.secrets_sidecar.arn)[6]}"
 }
-
