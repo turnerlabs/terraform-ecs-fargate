@@ -1,4 +1,3 @@
-
 # this file is used by fargate-create (https://github.com/turnerlabs/fargate-create)
 # if not using fargate-create, this file can be ignored/deleted
 
@@ -30,17 +29,22 @@ prompts:
       - "logs-logzio.tf"      
       - "logs-logzio.zip"
 
+  - question: "Would you like an ECS event log dashboard?"
+    default: "yes"
+    filesToDeleteIfNo:
+      - "ecs-event-stream.tf"
+
   - question: "Would you like to use Secrets Manager for secrets?"
     default: "no"
     filesToDeleteIfNo:
       - "secretsmanager.tf"
+  
+  - question: "Would you like a sidecar container that makes your secrets manager secret available as a file?"
+    default: "no"
+    filesToDeleteIfNo:
+      - "secrets-sidecar.tf"
 
   - question: "Would you like to use SSM Parameter Store for secrets?"
     default: "no"
     filesToDeleteIfNo:
       - "ssm-parameters.tf"
-
-  - question: "Would you like an ECS event log dashboard?"
-    default: "yes"
-    filesToDeleteIfNo:
-      - "ecs-event-stream.tf"      
