@@ -57,7 +57,7 @@ EOF
 resource "aws_lambda_function" "lambda_logz" {
   function_name    = "${var.app}-${var.environment}-logz"
   description      = "Sends Cloudwatch logs to logz."
-  runtime          = "python2.7"
+  runtime          = "python3.7"
   timeout          = 60
   memory_size      = 512
   role             = aws_iam_role.iam_for_lambda_logz.arn
