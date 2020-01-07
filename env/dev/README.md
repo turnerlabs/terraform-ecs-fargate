@@ -21,6 +21,7 @@ The optional components can be removed by simply deleting the `.tf` file.
 | [autoscale-time.tf][edat] | Time-based auto scaling | Yes |
 | [logs-logzio.tf][edll] | Ship container logs to logz.io | Yes |
 | [secretsmanager.tf][edsm] | Add a base secret to Secretsmanager | Yes |
+| [secrets-sidecar.tf][ssc] | Adds a task definition configuration for deploying your app along with a sidecar container that writes your secrets manager secret to a file. Note that this is dependent upon opting in to `secretsmanager.tf`. | Yes |
 
 
 ## Usage
@@ -71,6 +72,8 @@ $ terraform apply
 | scale_down_min_capacity | The mimimum number of containers to scale down to. Set this and `scale_down_max_capacity` to 0 to turn off service on the `scale_down_cron` schedule. | string | `0` | no |
 | scale_up_cron | Default scale up at 7 am weekdays, this is UTC so it doesn't adjust to daylight savings https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html | string | `cron(0 11 ? * MON-FRI *)` | no |
 | secrets_saml_users | The users (case sensitive email addresses) from the saml role to give access to Secrets Manager and SSM Parameter Store | list | - | yes |
+| secret_dir | directory where secret is written | string | `/var/secret` | yes |
+| secret_sidecar_image | sidecar container that writes the secret to a file accessible by app container | string | `quay.io/turner/secretsmanager-sidecar` | yes |
 | tags | Tags for the infrastructure | map | - | yes |
 | vpc | The VPC to use for the Fargate cluster | string | - | yes |
 
@@ -104,3 +107,5 @@ $ terraform apply
 [edsm]: secretsmanager.tf
 [alb-docs]: https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html
 [up]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html
+[ssm]: ssm-parameters.tf
+[ssc]: secrets-sidecar.tf
