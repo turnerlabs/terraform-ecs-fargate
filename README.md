@@ -120,6 +120,10 @@ $ fargate-create -f terraform.tfvars
 + [Environment `dev` README][env-dev]
 
 
+Install pre-commit hook that checks terraform code for formatting
+```sh
+ln -s ../../pre-commit.sh .git/hooks/pre-commit
+```
 
 [fargate]: https://aws.amazon.com/fargate/
 [bm]: ./base/main.tf
