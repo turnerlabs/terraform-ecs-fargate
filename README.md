@@ -43,6 +43,7 @@ that is needed.
 | [secrets-sidecar.tf][ssc] | Adds a task definition configuration for deploying your app along with a sidecar container that writes your secrets manager secret to a file. Note that this is dependent upon opting in to `secretsmanager.tf`. | Yes |
 | [ssm-parameters.tf][ssm] | Add a CMK KMS key for use with SSM Parameter Store. Also gives ECS task definition role access to read secrets from parameter store. | Yes |
 | [ecs-event-stream.tf][ees] | Add an ECS event log dashboard | Yes |
+| [monitoring.tf][mon] | Send health alarms to an SNS topic for monitoring | Yes |
 
 
 ## Usage
@@ -143,3 +144,4 @@ $ fargate-create -f terraform.tfvars
 [base]: ./base/README.md
 [env-dev]: ./env/dev/README.md
 [ssc]: secrets-sidecar.tf
+[mon]: monitoring.tf

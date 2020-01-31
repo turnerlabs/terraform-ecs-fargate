@@ -23,6 +23,7 @@ The optional components can be removed by simply deleting the `.tf` file.
 | [secretsmanager.tf][edsm] | Add a Secrets Manager secret with a CMK KMS key. Also gives app role and ECS task definition role access to read secrets from Secrets Manager | Yes |
 | [secrets-sidecar.tf][ssc] | Adds a task definition configuration for deploying your app along with a sidecar container that writes your secrets manager secret to a file. Note that this is dependent upon opting in to `secretsmanager.tf`. | Yes |
 | [ssm-parameters.tf][ssm] | Add a CMK KMS key for use with SSM Parameter Store. Also gives ECS task definition role access to read secrets from parameter store. | Yes |
+| [monitoring.tf][mon] | Send health alarms to an SNS topic for monitoring | Yes |
 
 
 
@@ -64,6 +65,7 @@ $ terraform apply
 | logs_retention_in_days | Specifies the number of days you want to retain log events | int | 90 | no |
 | logz_token | The auth token to use for sending logs to Logz.io | string | - | yes |
 | logz_url | The endpoint to use for sending logs to Logz.io | string | `https://listener.logz.io:8071` | no |
+| monitoring_sns_topic | The name of an SNS topic that alarms post to | string | `BigPanda_Topic` | no |
 | private_subnets | The private subnets, minimum of 2, that are a part of the VPC(s) | string | - | yes |
 | public_subnets | The public subnets, minimum of 2, that are a part of the VPC(s) | string | - | yes |
 | region | The AWS region to use for the dev environment's infrastructure Currently, Fargate is only available in `us-east-1`. | string | `us-east-1` | no |
@@ -111,3 +113,4 @@ $ terraform apply
 [up]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html
 [ssm]: ssm-parameters.tf
 [ssc]: secrets-sidecar.tf
+[mon]: monitoring.tf
