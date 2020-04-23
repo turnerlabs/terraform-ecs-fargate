@@ -72,7 +72,7 @@ data "aws_ecr_repository" "ecr" {
 
 # The AWS keys for the CICD user to use in a build system
 output "cicd_keys" {
-  value = "terraform state show aws_iam_access_key.cicd_keys"
+  value = "terraform show -json | jq '.values.root_module.resources | .[] | select ( .address == \"aws_iam_access_key.cicd_keys\") | { AWS_ACCESS_KEY_ID: .values.id, AWS_SECRET_ACCESS_KEY: .values.secret }'"
 }
 
 # The URL for the docker image repo in ECR
