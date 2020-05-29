@@ -100,7 +100,7 @@ resource "aws_ecs_task_definition" "secrets_sidecar" {
       "logDriver": "awslogs",
       "options": {
         "awslogs-group": "${local.logs_group}",
-        "awslogs-region": "us-east-1",
+        "awslogs-region": "${var.region}",
         "awslogs-stream-prefix": "ecs"
       }
     }
@@ -130,7 +130,7 @@ resource "aws_ecs_task_definition" "secrets_sidecar" {
       "logDriver": "awslogs",
       "options": {
         "awslogs-group": "${local.logs_group}",
-        "awslogs-region": "us-east-1",
+        "awslogs-region": "${var.region}",
         "awslogs-stream-prefix": "ecs"
       }
     }

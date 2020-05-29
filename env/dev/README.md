@@ -66,7 +66,7 @@ $ terraform apply
 | logz_url | The endpoint to use for sending logs to Logz.io | string | `https://listener.logz.io:8071` | no |
 | private_subnets | The private subnets, minimum of 2, that are a part of the VPC(s) | string | - | yes |
 | public_subnets | The public subnets, minimum of 2, that are a part of the VPC(s) | string | - | yes |
-| region | The AWS region to use for the dev environment's infrastructure Currently, Fargate is only available in `us-east-1`. | string | `us-east-1` | no |
+| region | The AWS region to use for the dev environment's infrastructure`. | string | `us-east-1` | no |
 | replicas | How many containers to run | string | `1` | no |
 | saml_role | The SAML role to use for adding users to the ECR policy | string | - | yes |
 | scale_down_cron | Default scale down at 7 pm every day | string | `cron(0 23 * * ? *)` | no |
