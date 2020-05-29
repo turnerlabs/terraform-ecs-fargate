@@ -114,7 +114,7 @@ resource "aws_ecs_task_definition" "app" {
       "logDriver": "awslogs",
       "options": {
         "awslogs-group": "/fargate/service/${var.app}-${var.environment}",
-        "awslogs-region": "us-east-1",
+        "awslogs-region": "${var.region}",
         "awslogs-stream-prefix": "ecs"
       }
     }
