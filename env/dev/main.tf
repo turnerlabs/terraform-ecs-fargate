@@ -14,7 +14,7 @@ variable "aws_profile" {
 }
 
 provider "aws" {
-  version = ">= 2.27.0"
+  version = ">= 2.27.0, < 3.0.0"
   region  = var.region
   profile = var.aws_profile
 }
