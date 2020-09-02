@@ -175,7 +175,7 @@ EOF
 
 resource "local_file" "secrets_sidecar" {
   filename = "secrets-sidecar-deploy.sh"
-  content  = "${data.template_file.secrets_sidecar_deploy.rendered}"
+  content  = data.template_file.secrets_sidecar_deploy.rendered
 }
 
 # command to deploy the secrets sidecar configuration
