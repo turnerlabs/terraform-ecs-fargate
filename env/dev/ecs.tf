@@ -1,7 +1,7 @@
 /**
  * Elastic Container Service (ecs)
  * This component is required to create the Fargate ECS service. It will create a Fargate cluster
- * based on the application name and enironment. It will create a "Task Definition", which is required
+ * based on the application name and environment. It will create a "Task Definition", which is required
  * to run a Docker container, https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html.
  * Next it creates a ECS Service, https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html
  * It attaches the Load Balancer created in `lb.tf` to the service, and sets up the networking required.
