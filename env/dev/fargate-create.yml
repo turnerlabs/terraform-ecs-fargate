@@ -48,3 +48,8 @@ prompts:
     default: "no"
     filesToDeleteIfNo:
       - "ssm-parameters.tf"
+
+  - question: "Would you like health alarms to post to an SNS topic for monitoring?"
+    default: "no"
+    filesToDeleteIfNo:
+      - "monitoring.tf"
