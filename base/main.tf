@@ -13,7 +13,6 @@ terraform {
 # Using the AWS Provider
 # https://www.terraform.io/docs/providers/
 provider "aws" {
-  version = ">= 2.23.0"
   region  = var.region
   profile = var.aws_profile
 }
