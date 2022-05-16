@@ -1,5 +1,12 @@
 terraform {
-  required_version = ">= 0.12"
+  required_version = ">= 0.13"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0.0, < 5.0.0"
+    }
+  }
 }
 
 /**
@@ -13,7 +20,6 @@ terraform {
 # Using the AWS Provider
 # https://www.terraform.io/docs/providers/
 provider "aws" {
-  version = ">= 2.23.0"
   region  = var.region
   profile = var.aws_profile
 }
