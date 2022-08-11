@@ -1,4 +1,4 @@
-# adds an https listener to the load balancer if you are providing your own ACM cert
+# Adds an https listener to the load balancer if you are providing your own ACM cert
 
 resource "aws_alb_listener" "https" {
   count = var.certificate_arn != "" ? 1 : 0

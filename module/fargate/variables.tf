@@ -38,7 +38,7 @@ variable "private_subnets" {
 variable "public_subnets" {
 }
 
-# The port the load balancer will listen on
+# The port the standard http load balancer will listen on
 variable "lb_port" {
   default = "80"
 }
@@ -46,6 +46,13 @@ variable "lb_port" {
 # The load balancer protocol
 variable "lb_protocol" {
   default = "HTTP"
+}
+
+# Should the service do http to https redirects, or just standard http hosting? This is done via alb rules 
+#  https://aws.amazon.com/premiumsupport/knowledge-center/elb-redirect-http-to-https-using-alb/
+variable do_https_redirect {
+  type    = bool
+  default = false
 }
 
 # Whether the application is available on the public internet,
@@ -79,6 +86,7 @@ variable "health_check_matcher" {
   default = "200"
 }
 
+# How many days worth of load balancer logs to keep in s3
 variable "lb_access_logs_expiration_days" {
   default = "3"
 }
@@ -101,17 +109,17 @@ variable "ecs_lambda_runtime" {
   default = "nodejs14.x"
 }
 
-# The port to listen on for HTTPS, always use 443
+# The port to listen on for HTTPS (if it is enabled), always use 443
 variable "https_port" {
   default = "443"
 }
 
-# The ARN for the SSL certificate
+# The ARN for the SSL certificate, if this is not blank it will use it instead of requesting a dns validated ACM certificate
 variable "certificate_arn" {
   default = ""
 }
 
-# The domain for r53 registration
+# The domain for r53 registration, leave blank to indicate not using route53 
 variable "domain" {
   default = ""
 }

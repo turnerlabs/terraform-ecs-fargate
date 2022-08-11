@@ -1,3 +1,5 @@
+# Adds an https listener to the load balancer, creates the dns entry for it and uses ACM dns based validation to create a certificate
+
 locals {
   hostname = "${var.app}-${var.environment}"
 }
