@@ -1,7 +1,7 @@
 # adds an https listener to the load balancer if you are providing your own ACM cert
 
 resource "aws_alb_listener" "https" {
-  count = var.certificate_arn!="" ? 1 : 0
+  count = var.certificate_arn != "" ? 1 : 0
 
   load_balancer_arn = aws_alb.main.id
   port              = var.https_port
@@ -15,7 +15,7 @@ resource "aws_alb_listener" "https" {
 }
 
 resource "aws_security_group_rule" "ingress_lb_https" {
-  count = var.certificate_arn!="" ? 1 : 0
+  count = var.certificate_arn != "" ? 1 : 0
 
   type              = "ingress"
   description       = "HTTPS"

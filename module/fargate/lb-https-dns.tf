@@ -3,7 +3,7 @@ locals {
 }
 
 data "aws_route53_zone" "app" {
-    count = var.domain != "" ? 1 : 0
+  count = var.domain != "" ? 1 : 0
 
   name = var.domain
 }
@@ -27,14 +27,14 @@ resource "aws_route53_record" "dns" {
 }
 
 resource "aws_acm_certificate" "cert" {
-    count = var.domain != "" ? 1 : 0
+  count = var.domain != "" ? 1 : 0
 
   domain_name       = local.subdomain
   validation_method = "DNS"
 }
 
 resource "aws_route53_record" "cert_validation" {
-      count = var.domain != "" ? 1 : 0
+  count = var.domain != "" ? 1 : 0
 
   name    = tolist(aws_acm_certificate.cert[0].domain_validation_options)[0].resource_record_name
   type    = tolist(aws_acm_certificate.cert[0].domain_validation_options)[0].resource_record_type
@@ -44,14 +44,14 @@ resource "aws_route53_record" "cert_validation" {
 }
 
 resource "aws_acm_certificate_validation" "cert" {
-      count = var.domain != "" ? 1 : 0
+  count = var.domain != "" ? 1 : 0
 
   certificate_arn         = aws_acm_certificate.cert[0].arn
   validation_record_fqdns = [aws_route53_record.cert_validation[0].fqdn]
 }
 
 resource "aws_alb_listener" "dns_https" {
-      count = var.domain != "" ? 1 : 0
+  count = var.domain != "" ? 1 : 0
 
   load_balancer_arn = aws_alb.main.id
   port              = var.https_port
@@ -65,7 +65,7 @@ resource "aws_alb_listener" "dns_https" {
 }
 
 resource "aws_security_group_rule" "dns_ingress_lb_https" {
-      count = var.domain!= "" ? 1 : 0
+  count = var.domain != "" ? 1 : 0
 
   type              = "ingress"
   description       = "HTTPS"

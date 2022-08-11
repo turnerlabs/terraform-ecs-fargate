@@ -30,7 +30,7 @@
  */
 
 resource "aws_cloudwatch_dashboard" "cloudwatch_dashboard" {
-  count = var.create_performance_dashboard ? 1 : 0
+  count          = var.create_performance_dashboard ? 1 : 0
   dashboard_name = "${var.app}-${var.environment}-fargate"
 
   dashboard_body = <<EOF

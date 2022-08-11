@@ -84,7 +84,7 @@ locals {
 
 # create the KMS key for this secret
 resource "aws_kms_key" "sm_kms_key" {
-  count = var.secrets_manager ? 1 :0
+  count       = var.secrets_manager ? 1 : 0
   description = "${var.app}-${var.environment}"
   policy      = data.aws_iam_policy_document.kms_resource_policy_doc.json
   tags = merge(
@@ -97,7 +97,7 @@ resource "aws_kms_key" "sm_kms_key" {
 
 # alias for the key
 resource "aws_kms_alias" "sm_kms_alias" {
-  count = var.secrets_manager ? 1 :0
+  count         = var.secrets_manager ? 1 : 0
   name          = "alias/${var.app}-${var.environment}"
   target_key_id = aws_kms_key.sm_kms_key[0].key_id
 }
@@ -183,17 +183,17 @@ data "aws_iam_policy_document" "kms_resource_policy_doc" {
 
 # create the secretsmanager secret
 resource "aws_secretsmanager_secret" "sm_secret" {
-  count = var.secrets_manager ? 1 :0
-  name       = "${var.app}-${var.environment}"
-  kms_key_id = aws_kms_key.sm_kms_key[0].key_id
-  tags       = var.tags
-  policy     = data.aws_iam_policy_document.sm_resource_policy_doc.json
+  count                   = var.secrets_manager ? 1 : 0
+  name                    = "${var.app}-${var.environment}"
+  kms_key_id              = aws_kms_key.sm_kms_key[0].key_id
+  tags                    = var.tags
+  policy                  = data.aws_iam_policy_document.sm_resource_policy_doc.json
   recovery_window_in_days = var.secrets_manager_recovery_window_in_days
 }
 
 # create the placeholder secret json
 resource "aws_secretsmanager_secret_version" "initial" {
-  count = var.secrets_manager ? 1 :0
+  count         = var.secrets_manager ? 1 : 0
   secret_id     = aws_secretsmanager_secret.sm_secret[0].id
   secret_string = "{}"
 }

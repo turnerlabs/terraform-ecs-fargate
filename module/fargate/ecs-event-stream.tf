@@ -9,7 +9,7 @@
 
 # cw event rule
 resource "aws_cloudwatch_event_rule" "ecs_event_stream" {
-  count = var.create_ecs_dashboard ? 1 : 0
+  count       = var.create_ecs_dashboard ? 1 : 0
   name        = "${var.app}-${var.environment}-ecs-event-stream"
   description = "Passes ecs event logs for ${var.app}-${var.environment} to a lambda that writes them to cw logs"
 
@@ -26,8 +26,8 @@ PATTERN
 
 resource "aws_cloudwatch_event_target" "ecs_event_stream" {
   count = var.create_ecs_dashboard ? 1 : 0
-  rule = aws_cloudwatch_event_rule.ecs_event_stream[0].name
-  arn  = aws_lambda_function.ecs_event_stream[0].arn
+  rule  = aws_cloudwatch_event_rule.ecs_event_stream[0].name
+  arn   = aws_lambda_function.ecs_event_stream[0].arn
 }
 
 data "template_file" "lambda_source" {
@@ -40,7 +40,7 @@ EOF
 }
 
 data "archive_file" "lambda_zip" {
-  count = var.create_ecs_dashboard ? 1 : 0
+  count                   = var.create_ecs_dashboard ? 1 : 0
   type                    = "zip"
   source_content          = data.template_file.lambda_source.rendered
   source_content_filename = "index.js"
@@ -48,7 +48,7 @@ data "archive_file" "lambda_zip" {
 }
 
 resource "aws_lambda_permission" "ecs_event_stream" {
-  count = var.create_ecs_dashboard ? 1 : 0
+  count         = var.create_ecs_dashboard ? 1 : 0
   statement_id  = "AllowExecutionFromCloudWatch"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.ecs_event_stream[0].arn
@@ -57,7 +57,7 @@ resource "aws_lambda_permission" "ecs_event_stream" {
 }
 
 resource "aws_lambda_function" "ecs_event_stream" {
-  count = var.create_ecs_dashboard ? 1 : 0
+  count            = var.create_ecs_dashboard ? 1 : 0
   function_name    = "${var.app}-${var.environment}-ecs-event-stream"
   role             = aws_iam_role.ecs_event_stream[0].arn
   filename         = data.archive_file.lambda_zip[0].output_path
@@ -76,7 +76,7 @@ resource "aws_lambda_alias" "ecs_event_stream" {
 
 resource "aws_iam_role" "ecs_event_stream" {
   count = var.create_ecs_dashboard ? 1 : 0
-  name = aws_cloudwatch_event_rule.ecs_event_stream[0].name
+  name  = aws_cloudwatch_event_rule.ecs_event_stream[0].name
 
   assume_role_policy = <<EOF
 {
@@ -97,14 +97,14 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_event_stream" {
-  count = var.create_ecs_dashboard ? 1 : 0
+  count      = var.create_ecs_dashboard ? 1 : 0
   role       = aws_iam_role.ecs_event_stream[0].name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
 # cloudwatch dashboard with logs insights query
 resource "aws_cloudwatch_dashboard" "ecs-event-stream" {
-  count = var.create_ecs_dashboard ? 1 : 0
+  count          = var.create_ecs_dashboard ? 1 : 0
   dashboard_name = "${var.app}-${var.environment}-ecs-event-stream"
 
   dashboard_body = <<EOF

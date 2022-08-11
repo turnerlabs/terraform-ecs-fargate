@@ -1,13 +1,13 @@
 # create ci/cd user with access keys (for build system)
 resource "aws_iam_user" "cicd" {
   count = var.create_cicd_user ? 1 : 0
-  name = "srv_${var.app}_${var.environment}_cicd"
-  tags = var.tags
+  name  = "srv_${var.app}_${var.environment}_cicd"
+  tags  = var.tags
 }
 
 resource "aws_iam_access_key" "cicd_keys" {
   count = var.create_cicd_user ? 1 : 0
-  user = aws_iam_user.cicd[0].name
+  user  = aws_iam_user.cicd[0].name
 }
 
 # grant required permissions to deploy
@@ -64,7 +64,7 @@ data "aws_iam_policy_document" "cicd_policy" {
 }
 
 resource "aws_iam_user_policy" "cicd_user_policy" {
-  count = var.create_cicd_user ? 1 : 0
+  count  = var.create_cicd_user ? 1 : 0
   name   = "${var.app}_${var.environment}_cicd"
   user   = aws_iam_user.cicd[0].name
   policy = data.aws_iam_policy_document.cicd_policy.json
