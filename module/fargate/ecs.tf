@@ -12,11 +12,6 @@
  * migrated the real application containers to the task definition.
  */
 
-# How many containers to run
-variable "replicas" {
-  default = "1"
-}
-
 # The name of the container to run
 variable "container_name" {
   default = "app"
@@ -45,17 +40,6 @@ resource "aws_ecs_cluster" "app" {
   tags = var.tags
 }
 
-# The default docker image to deploy with the infrastructure.
-# Note that you can use the fargate CLI for application concerns
-# like deploying actual application images and environment variables
-# on top of the infrastructure provisioned by this template
-# https://github.com/turnerlabs/fargate
-# note that the source for the turner default backend image is here:
-# https://github.com/turnerlabs/turner-defaultbackend
-variable "default_backend_image" {
-  default = "quay.io/turner/turner-defaultbackend:0.2.0"
-}
-
 resource "aws_appautoscaling_target" "app_scale_target" {
   service_namespace  = "ecs"
   resource_id        = "service/${aws_ecs_cluster.app.name}/${aws_ecs_service.app.name}"
@@ -81,7 +65,7 @@ resource "aws_ecs_task_definition" "app" {
 [
   {
     "name": "${var.container_name}",
-    "image": "${var.default_backend_image}",
+    "image": "${var.container_image}",
     "essential": true,
     "portMappings": [
       {
@@ -110,6 +94,10 @@ resource "aws_ecs_task_definition" "app" {
       {
         "name": "ENVIRONMENT",
         "value": "${var.environment}"
+      },
+      {
+        "name": "NGINX_PORT",
+        "value": "${var.container_port}"
       }
     ],
     "logConfiguration": {

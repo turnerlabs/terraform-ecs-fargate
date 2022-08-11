@@ -48,26 +48,38 @@ data "aws_elb_service_account" "main" {
 # bucket for storing ALB access logs
 resource "aws_s3_bucket" "lb_access_logs" {
   bucket        = "${var.app}-${var.environment}-lb-access-logs"
-  acl           = "private"
   tags          = var.tags
   force_destroy = true
+}
 
-  lifecycle_rule {
-    id                                     = "cleanup"
-    enabled                                = true
-    abort_incomplete_multipart_upload_days = 1
-    prefix                                 = ""
+resource "aws_s3_bucket_acl" "example_bucket_acl" {
+  bucket = aws_s3_bucket.lb_access_logs.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "bucket_encryption" {
+  bucket = aws_s3_bucket.lb_access_logs.id
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "bucket_lifecycle_multipart" {
+  bucket = aws_s3_bucket.lb_access_logs.id
+
+  rule {
+    id     = "cleanup"
+    status = "Enabled"
+
+    # This should not happen, but just in case
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 1
+    }
 
     expiration {
       days = var.lb_access_logs_expiration_days
-    }
-  }
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
     }
   }
 }
@@ -97,6 +109,15 @@ resource "aws_s3_bucket_policy" "lb_access_logs" {
   ]
 }
 POLICY
+}
+
+resource "aws_s3_bucket_public_access_block" "example" {
+  bucket = aws_s3_bucket.lb_access_logs.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
 # The load balancer DNS name

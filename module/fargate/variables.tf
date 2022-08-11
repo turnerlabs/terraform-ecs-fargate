@@ -1,17 +1,17 @@
 # The application's name
 variable "app" {
-    type=string
+  type = string
 }
 
 # The environment that is being built
 variable "environment" {
-    type=string
+  type = string
 }
 
 # Should the module create an iam user with permissions tuned for cicd (cicf.tf)
 variable "create_cicd_user" {
-    type = bool
-    default = false
+  type    = bool
+  default = false
 }
 
 # Tags for the infrastructure
@@ -23,7 +23,7 @@ variable "tags" {
 # Best practice is that this value is higher than 1024 so the container processes
 # isn't running at root.
 variable "container_port" {
-    type = string
+  type = string
 }
 
 # The VPC to use for the Fargate cluster
@@ -61,7 +61,7 @@ variable "deregistration_delay" {
 
 # The path to the health check for the load balancer to know if the container(s) are ready
 variable "health_check" {
-    default = "/"
+  default = "/"
 }
 
 # How often to check the liveliness of the container
@@ -85,20 +85,20 @@ variable "lb_access_logs_expiration_days" {
 
 # Create a cloudwatch dashboard containing popular performance metrics about fargate
 variable "create_performance_dashboard" {
-    type = bool
-    default = true
+  type    = bool
+  default = true
 }
 
 # Log the ECS events happening in fargate and create a cloudwatch dashboard that shows these messages
 variable "create_ecs_dashboard" {
-    type = bool
-    default = false
+  type    = bool
+  default = false
 }
 
 # The lambda runtime for the ecs dashboard, provided here so that it is easy to update to the latest supported
 variable "ecs_lambda_runtime" {
-    type = string
-    default = "nodejs14.x"
+  type    = string
+  default = "nodejs14.x"
 }
 
 # The port to listen on for HTTPS, always use 443
@@ -118,18 +118,34 @@ variable "domain" {
 
 #indicates if a secrets manager 
 variable "secrets_manager" {
-  type = bool
+  type    = bool
   default = false
 }
 
 # Number of days that secrets manager will wait before fully deleting a secret, set to 0 to delete immediately
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret#recovery_window_in_days
 variable "secrets_manager_recovery_window_in_days" {
-  type = number
+  type    = number
   default = 7
 }
 
 #take this out
 variable "saml_role" {
   type = string
+}
+
+# How many containers to run
+variable "replicas" {
+  default = "1"
+}
+
+# The default docker image to deploy with the infrastructure.
+# Note that you can use the fargate CLI for application concerns
+# like deploying actual application images and environment variables
+# on top of the infrastructure provisioned by this template
+# https://github.com/turnerlabs/fargate
+# note that the source for the turner default backend image is here:
+# https://github.com/turnerlabs/turner-defaultbackend
+variable "container_image" {
+  default = "quay.io/turner/turner-defaultbackend:0.2.0"
 }
