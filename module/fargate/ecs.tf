@@ -125,7 +125,7 @@ resource "aws_ecs_service" "app" {
 
   network_configuration {
     security_groups = [aws_security_group.nsg_task.id]
-    subnets         = split(",", var.private_subnets)
+    subnets         = var.fargate_subnets
   }
 
   load_balancer {
@@ -143,9 +143,9 @@ resource "aws_ecs_service" "app" {
 
   # [after initial apply] don't override changes made to task_definition
   # from outside of terraform (i.e.; fargate cli)
-  lifecycle {
-    ignore_changes = [task_definition]
-  }
+  # lifecycle {
+  #   ignore_changes = [task_definition]
+  # }
 }
 
 # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_execution_IAM_role.html

@@ -1,0 +1,8 @@
+formatter: "" # this is required
+sort:
+  enabled: true
+  by: required
+sections:
+  show:
+    - inputs
+    - outputs

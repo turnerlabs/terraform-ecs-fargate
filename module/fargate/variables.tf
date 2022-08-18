@@ -30,13 +30,14 @@ variable "container_port" {
 variable "vpc" {
 }
 
-# The private subnets, minimum of 2, that are a part of the VPC(s)
-variable "private_subnets" {
+variable "load_balancer_subnets" {
+  type = list
 }
 
-# The public subnets, minimum of 2, that are a part of the VPC(s)
-variable "public_subnets" {
+variable "fargate_subnets" {
+  type = list
 }
+
 
 # The port the standard http load balancer will listen on
 variable "lb_port" {
@@ -56,9 +57,9 @@ variable do_https_redirect {
 }
 
 # Whether the application is available on the public internet,
-# also will determine which subnets will be used (public or private)
-variable "internal" {
-  default = true
+variable "create_public_ip" {
+  type = bool
+  default = false
 }
 
 # The amount time for Elastic Load Balancing to wait before changing the state of a deregistering target from draining to unused
