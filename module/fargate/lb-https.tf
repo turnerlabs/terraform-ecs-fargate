@@ -7,6 +7,7 @@ resource "aws_alb_listener" "https" {
   port              = var.https_port
   protocol          = "HTTPS"
   certificate_arn   = var.certificate_arn
+  ssl_policy = var.ssl_policy
 
   default_action {
     target_group_arn = aws_alb_target_group.main.id

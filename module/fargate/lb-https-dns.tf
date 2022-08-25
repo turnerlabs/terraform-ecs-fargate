@@ -58,6 +58,7 @@ resource "aws_alb_listener" "dns_https" {
   load_balancer_arn = aws_alb.main.id
   port              = var.https_port
   protocol          = "HTTPS"
+  ssl_policy = var.ssl_policy
   certificate_arn   = aws_acm_certificate_validation.cert[0].certificate_arn
 
   default_action {

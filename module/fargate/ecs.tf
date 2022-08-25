@@ -54,66 +54,52 @@ resource "aws_ecs_task_definition" "app" {
   family                   = "${var.app}-${var.environment}"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-  cpu                      = "256"
-  memory                   = "512"
+  cpu                      = var.cpu_units
+  memory                   = var.memory_size
   execution_role_arn       = aws_iam_role.ecsTaskExecutionRole.arn
 
   # defined in role.tf
   task_role_arn = aws_iam_role.app_role.arn
 
-  container_definitions = <<DEFINITION
-[
-  {
-    "name": "${var.container_name}",
-    "image": "${var.container_image}",
-    "essential": true,
-    "portMappings": [
-      {
-        "protocol": "tcp",
-        "containerPort": ${var.container_port},
-        "hostPort": ${var.container_port}
-      }
-    ],
-    "environment": [
-      {
-        "name": "PORT",
-        "value": "${var.container_port}"
-      },
-      {
-        "name": "HEALTHCHECK",
-        "value": "${var.health_check}"
-      },
-      {
-        "name": "ENABLE_LOGGING",
-        "value": "false"
-      },
-      {
-        "name": "PRODUCT",
-        "value": "${var.app}"
-      },
-      {
-        "name": "ENVIRONMENT",
-        "value": "${var.environment}"
-      },
-      {
-        "name": "NGINX_PORT",
-        "value": "${var.container_port}"
-      }
-    ],
-    "logConfiguration": {
-      "logDriver": "awslogs",
-      "options": {
-        "awslogs-group": "/fargate/service/${var.app}-${var.environment}",
-        "awslogs-region": "${data.aws_region.current.name}",
-        "awslogs-stream-prefix": "ecs"
-      }
-    }
-  }
-]
-DEFINITION
+  container_definitions = var.container_definitions!="" ? var.container_definitions : module.task_definition.json_map_encoded_list
 
 
   tags = var.tags
+}
+
+
+module "task_definition" {
+  source = "cloudposse/ecs-container-definition/aws"
+  version = "v0.58.1"
+
+  container_name  = var.container_name
+  container_image = var.container_image
+  essential       = true
+
+  port_mappings = [
+    {
+      protocol      = "tcp"
+      containerPort = var.container_port
+      hostPort      = var.container_port
+    }
+  ]
+
+  environment = [
+    {
+      name  = "PORT"
+      value = var.container_port
+    }
+  ]
+
+  log_configuration = {
+    logDriver = "awslogs"
+    options = {
+      awslogs-group         = "/fargate/service/${var.app}-${var.environment}",
+      awslogs-region        = data.aws_region.current.name
+      awslogs-stream-prefix = "ecs"
+    }
+  }
+
 }
 
 resource "aws_ecs_service" "app" {
@@ -140,12 +126,6 @@ resource "aws_ecs_service" "app" {
 
   # workaround for https://github.com/hashicorp/terraform/issues/12634
   depends_on = [aws_alb_listener.http]
-
-  # [after initial apply] don't override changes made to task_definition
-  # from outside of terraform (i.e.; fargate cli)
-  # lifecycle {
-  #   ignore_changes = [task_definition]
-  # }
 }
 
 # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_execution_IAM_role.html

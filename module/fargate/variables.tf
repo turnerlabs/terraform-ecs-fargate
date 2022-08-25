@@ -38,7 +38,6 @@ variable "fargate_subnets" {
   type = list
 }
 
-
 # The port the standard http load balancer will listen on
 variable "lb_port" {
   default = "80"
@@ -58,7 +57,7 @@ variable do_https_redirect {
 
 # Whether the application is available on the public internet,
 variable "create_public_ip" {
-  type = bool
+  type    = bool
   default = false
 }
 
@@ -125,6 +124,13 @@ variable "domain" {
   default = ""
 }
 
+# This is the policy that controls the specifics about TLS/SSL versions and supported ciphers. This default will only support TLS 1.2
+#  https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html#describe-ssl-policies
+variable "ssl_policy" {
+  type=string
+  default="ELBSecurityPolicy-TLS-1-2-Ext-2018-06"
+}
+
 #indicates if a secrets manager 
 variable "secrets_manager" {
   type    = bool
@@ -138,6 +144,13 @@ variable "secrets_manager_recovery_window_in_days" {
   default = 7
 }
 
+# A list of users that will have full access to the secrets manager and its kms key, the current user applying the terraform 
+#  will have access as well.
+variable "secrets_users" {
+  type = list
+  default = []
+}
+
 #take this out
 variable "saml_role" {
   type = string
@@ -145,7 +158,8 @@ variable "saml_role" {
 
 # How many containers to run
 variable "replicas" {
-  default = "1"
+  type    = number
+  default = 1
 }
 
 # The default docker image to deploy with the infrastructure.
@@ -157,4 +171,25 @@ variable "replicas" {
 # https://github.com/turnerlabs/turner-defaultbackend
 variable "container_image" {
   default = "quay.io/turner/turner-defaultbackend:0.2.0"
+}
+
+# See https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#task_size
+variable "cpu_units" {
+  type    = number
+  default = 256
+}
+
+# See https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#task_size
+variable "memory_size" {
+  type    = number
+  default = 512
+}
+
+# This is the json formatted container definition for the task. By default, a definition with the indicated
+#  container image and cloudwatch logging will be provided. Setting this will override the defaults allowing 
+#  configuration like environment variables to be set. We recommend using this module to help build the json 
+#  rather than doing it in a large string: https://registry.terraform.io/modules/cloudposse/ecs-container-definition/aws/latest
+variable "container_definitions" {
+  type = string
+  default = ""
 }
