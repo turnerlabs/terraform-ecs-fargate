@@ -3,6 +3,12 @@ variable "app" {
   type = string
 }
 
+
+# The name of the container to run
+variable "container_name" {
+  default = "app"
+}
+
 # The environment that is being built
 variable "environment" {
   type = string
@@ -192,4 +198,38 @@ variable "memory_size" {
 variable "container_definitions" {
   type = string
   default = ""
+}
+
+
+# Should the fargate service scale up and down with cpu usage
+variable "do_performance_autoscaling" {
+  type = bool
+  default = false
+}
+
+# If the average CPU utilization over a minute drops to this threshold,
+# the number of containers will be reduced (but not below ecs_autoscale_min_instances).
+variable "scaling_cpu_low_threshold" {
+  default = "20"
+}
+
+# If the average CPU utilization over a minute rises to this threshold,
+# the number of containers will be increased (but not above ecs_autoscale_max_instances).
+variable "scaling_cpu_high_threshold" {
+  default = "80"
+}
+
+# The minimum number of containers that should be running.
+# Must be at least 1.
+# For production, consider using at least "2".
+variable "ecs_autoscale_min_instances" {
+  type = number
+  default = 1
+}
+
+# The maximum number of containers that should be running.
+# used by both autoscale-perf.tf and autoscale.time.tf
+variable "ecs_autoscale_max_instances" {
+  type = number
+  default = 4
 }
