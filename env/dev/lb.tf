@@ -82,7 +82,6 @@ data "aws_elb_service_account" "main" {
 # bucket for storing ALB access logs
 resource "aws_s3_bucket" "lb_access_logs" {
   bucket        = "${var.app}-${var.environment}-lb-access-logs"
-  acl           = "private"
   tags          = var.tags
   force_destroy = true
 
