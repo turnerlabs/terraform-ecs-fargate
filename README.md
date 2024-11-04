@@ -2,7 +2,7 @@
 
 A set of Terraform templates used for provisioning web application stacks on [AWS ECS Fargate][fargate].
 
-**Note**: We suggest moving away from this template to our newer modular version. This repo will still receive updates to maintain compatability as terraform and the AWS providers evolve, but most newer features will be implemented in the module.  You can find the module here: [https://github.com/turnerlabs/terraform-ecs-fargate-module](https://github.com/turnerlabs/terraform-ecs-fargate-module)
+**Note**: We suggest moving away from this template to our newer modular version. This repo will still receive updates to maintain compatability as terraform and the AWS providers evolve, but most newer features will be implemented in the module.  You can find the module here: [https://github.com/warnermedia/terraform-ecs-fargate-module](https://github.com/warnermedia/terraform-ecs-fargate-module)
 
 ![diagram](diagram.png)
 
