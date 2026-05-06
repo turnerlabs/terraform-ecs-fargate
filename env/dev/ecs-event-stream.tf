@@ -30,7 +30,7 @@ resource "aws_cloudwatch_event_target" "ecs_event_stream" {
 
 locals {
   lambda_code = <<EOF
-exports.handler = (event, context, callback) => {
+export const handler = async(event) => {
   console.log(JSON.stringify(event));
 }
 EOF
@@ -39,7 +39,7 @@ EOF
 data "archive_file" "lambda_zip" {
   type                    = "zip"
   source_content          = local.lambda_code
-  source_content_filename = "index.js"
+  source_content_filename = "index.mjs"
   output_path             = "lambda-${var.app}.zip"
 }
 
@@ -57,7 +57,7 @@ resource "aws_lambda_function" "ecs_event_stream" {
   filename         = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   handler          = "index.handler"
-  runtime          = "nodejs14.x"
+  runtime          = var.lambda_runtime
   tags             = var.tags
 }
 
@@ -116,4 +116,10 @@ resource "aws_cloudwatch_dashboard" "ecs-event-stream" {
   ]
 }
 EOF
+}
+
+
+variable "lambda_runtime" {
+  type    = string
+  default = "nodejs24.x"
 }
